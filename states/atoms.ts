@@ -4,15 +4,20 @@
 */
 
 import { atom, selector } from "recoil";
+import { recoilPersist } from 'recoil-persist';
+
+const { persistAtom } = recoilPersist();
 
 export const sample = atom({
-  key: "a",
-  default: "abc",
+  key: 'sample',
+  default: '',
+	effects_UNSTABLE: [persistAtom],
 });
 
 export const sampleSelector = selector({
-  key: "sampleSelector",
+  key: 'sampleSelector',
 	default: '',
+	effects_UNSTABLE: [persistAtom],
   get: ({ get }) => get(sample) + '+plus',
   set: ({ set }, newValue) => set(sample, newValue),
 });

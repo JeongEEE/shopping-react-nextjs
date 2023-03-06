@@ -11,6 +11,11 @@ const WhiteTest = () => {
 						Recoil Test
 					</Link>
 				</li>
+				<li>
+					<Link href="/white-test/mui-test">
+						MUI Test
+					</Link>
+				</li>
 			</ul>
 		</div>
 	)
