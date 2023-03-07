@@ -4,7 +4,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: 15px;
 }
 
 .header ul {
@@ -13,6 +12,7 @@
   align-items: baseline;
   margin: 0;
   padding: 0;
+	gap: 0.5rem;
 }
 
 .header li {
@@ -28,14 +28,4 @@
 .header a:active,
 .header a.active {
   color: var(--color-grey-200);
-}
-
-@media (min-width: 768px) {
-  .header ul {
-    gap: 0.5rem;
-  }
-
-  .header a {
-    font-size: var(--size-5);
-  }
 }

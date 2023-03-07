@@ -11,8 +11,8 @@ function MainNavigation() {
       </Link>
       <nav>
         <ul>
-          <li><Link href="/posts">장바구니</Link></li>
-          <li><Link href="/contact">내정보</Link></li>
+          <li><Link href="/basket">장바구니</Link></li>
+          <li><Link href="/my-info">내정보</Link></li>
           <li><Link href="/white-test">WhiteTest</Link></li>
         </ul>
       </nav>
