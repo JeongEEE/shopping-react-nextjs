@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '@/styles/Home.module.css'
 import { useRouter } from "next/router";
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 
 export default function Home() {
 	const router = useRouter();
@@ -11,9 +12,10 @@ export default function Home() {
 	}
 	
   return (
-    <div>
-			<h1>Shopping Next.js App</h1>
-			<button onClick={goWhiteTest}>WhiteTest</button>
-    </div>
+		<Box>
+			<Grid container sx={{ p: 2 }}>
+				<h1>Shopping Next.js App</h1>
+			</Grid>
+		</Box>
   )
 }
