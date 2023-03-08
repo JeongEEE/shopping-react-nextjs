@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import React, { Fragment } from 'react'
 import MainNavigation from './main-navigation'
 import { css, jsx } from '@emotion/react'
