@@ -6,4 +6,9 @@ export default {
 		const response = await Axios({ url, method: 'GET' });
     return Promise.resolve(response.data);
 	},
+	async getProductData(id): Promise<Array<object>> {
+		const url = `https://fakestoreapi.com/products/${id}`;
+		const response = await Axios({ url, method: 'GET' });
+    return Promise.resolve(response.data);
+	},
 }
