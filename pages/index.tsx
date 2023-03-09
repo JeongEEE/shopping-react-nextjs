@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import networkController from './api/networkController'
 import ProductItem from '../components/productItem';
+import { db } from '../firebaseConfig'
 
 export default function Home() {
 	const router = useRouter();
@@ -23,6 +24,17 @@ export default function Home() {
 			console.log(data);
 			setProducts(data);
 		});
+		console.log(db);
+
+		// firebase 로그인 상태 변경을 감지
+		// authService.onAuthStateChanged((user) => {
+    //   if (user) {
+    //     setIsLoggedIn(true);
+    //   } else {
+    //     setLogout();
+    //   }
+    // });
+		
 		return () => {
 			console.log('컴포넌트가 화면에서 사라짐');
 		}

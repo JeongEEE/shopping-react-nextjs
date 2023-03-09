@@ -10,6 +10,9 @@ function MainNavigation() {
         <Logo />
       </Link>
       <nav>
+				<ul>
+          <li><Link href="/login">로그인</Link></li>
+				</ul>
         <ul>
           <li><Link href="/basket">장바구니</Link></li>
           <li><Link href="/my-info">내정보</Link></li>
