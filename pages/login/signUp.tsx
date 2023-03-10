@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import { css, jsx } from '@emotion/react'
 import { useRouter } from "next/router";
 import networkController from '../api/networkController'
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const loginWrap = css`
 	max-width: 500px;
@@ -28,6 +29,7 @@ const btn = css`
 const SignUp = () => {
 	const [id, setId] = useState('');
 	const [pw, setPw] = useState('');
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 
 	const idInputOnChange = (e) => {
@@ -38,8 +40,10 @@ const SignUp = () => {
 	}
 
 	const requestSignUp = async () => {
+		setLoading(true);
 		const user = await networkController.firebaseSignUp(id, pw);
 		console.log(user);
+		setLoading(false);
 		router.push("/login")
 	}
 
@@ -57,7 +61,8 @@ const SignUp = () => {
 				  required value={pw} onChange={pwInputOnChange} type="password" />
 			</Grid>
 			<Grid pt={2} pb={3} container justifyContent="center">
-				<Button variant="contained" css={btn} onClick={requestSignUp}>회원가입</Button>
+				<LoadingButton variant="contained" css={btn} onClick={requestSignUp}
+					loading={loading}>회원가입</LoadingButton>
 			</Grid>
 		</Box>
 	)

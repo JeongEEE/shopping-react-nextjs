@@ -7,6 +7,9 @@ import TextField from '@mui/material/TextField';
 import { css, jsx } from '@emotion/react'
 import { useRouter } from "next/router";
 import networkController from '../api/networkController'
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useRecoilState } from 'recoil';
+import { userDataState } from '../../states/atoms'
 
 const loginWrap = css`
 	max-width: 500px;
@@ -23,12 +26,15 @@ const input = css`
 const btn = css`
 	width: 60%;
 	height: 2.5rem;
+	background-color: #1976d2;
 `
 
 const Login = () => {
 	const [id, setId] = useState('');
 	const [pw, setPw] = useState('');
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
+	const [userData, setUserData] = useRecoilState(userDataState);
 
 	const goSignUpPage = () => {
 		router.push("/login/signUp")
@@ -42,8 +48,11 @@ const Login = () => {
 	}
 
 	const requestSignIn = async () => {
+		setLoading(true);
 		const user = await networkController.firebaseSignIn(id, pw);
 		console.log(user);
+		setUserData(user);
+		setLoading(false);
 		router.push("/")
 	}
 
@@ -61,7 +70,8 @@ const Login = () => {
 					required type="password" value={pw} onChange={pwInputOnChange} />
 			</Grid>
 			<Grid pt={2} container justifyContent="center">
-				<Button variant="contained" css={btn} onClick={requestSignIn}>로그인</Button>
+				<LoadingButton variant="contained" css={btn} onClick={requestSignIn}
+					loading={loading}>로그인</LoadingButton>
 			</Grid>
 			<Grid pt={1} pb={2} container justifyContent="center">
 				<Button variant="text" onClick={goSignUpPage}>계정이 없으신가요? 회원가입 하세요</Button>

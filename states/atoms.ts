@@ -8,6 +8,18 @@ import { recoilPersist } from 'recoil-persist';
 
 const { persistAtom } = recoilPersist();
 
+export const loginStatus = atom({
+  key: 'loginStatus',
+  default: false,
+	effects_UNSTABLE: [persistAtom],
+});
+
+export const userDataState = atom({
+  key: 'userDataState',
+	default: {},
+	effects_UNSTABLE: [persistAtom],
+});
+
 export const sample = atom({
   key: 'sample',
   default: '',
