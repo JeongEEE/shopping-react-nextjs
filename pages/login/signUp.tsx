@@ -25,14 +25,10 @@ const btn = css`
 	height: 2.5rem;
 `
 
-const Login = () => {
+const SignUp = () => {
 	const [id, setId] = useState('');
 	const [pw, setPw] = useState('');
 	const router = useRouter();
-
-	const goSignUpPage = () => {
-		router.push("/login/signUp")
-	}
 
 	const idInputOnChange = (e) => {
 		setId(e.target.value);
@@ -41,33 +37,30 @@ const Login = () => {
 		setPw(e.target.value);
 	}
 
-	const requestSignIn = async () => {
-		const user = await networkController.firebaseSignIn(id, pw);
+	const requestSignUp = async () => {
+		const user = await networkController.firebaseSignUp(id, pw);
 		console.log(user);
-		router.push("/")
+		router.push("/login")
 	}
 
 	return (
 		<Box mt={16} css={loginWrap}>
 			<Grid pt={3} container justifyContent="center">
-				<Typography variant="h4">로그인</Typography>
+				<Typography variant="h4">J 쇼핑 회원가입</Typography>
 			</Grid>
 			<Grid pt={3} container justifyContent="center">
-				<TextField label="Email" variant="outlined" css={input} required
-					value={id} onChange={idInputOnChange} />
+				<TextField label="Email" variant="outlined" css={input} 
+					required value={id} onChange={idInputOnChange} />
 			</Grid>
 			<Grid pt={2} container justifyContent="center">
 				<TextField label="Password" variant="outlined" css={input}
-					required type="password" value={pw} onChange={pwInputOnChange} />
+				  required value={pw} onChange={pwInputOnChange} type="password" />
 			</Grid>
-			<Grid pt={2} container justifyContent="center">
-				<Button variant="contained" css={btn} onClick={requestSignIn}>로그인</Button>
-			</Grid>
-			<Grid pt={1} pb={2} container justifyContent="center">
-				<Button variant="text" onClick={goSignUpPage}>계정이 없으신가요? 회원가입 하세요</Button>
+			<Grid pt={2} pb={3} container justifyContent="center">
+				<Button variant="contained" css={btn} onClick={requestSignUp}>회원가입</Button>
 			</Grid>
 		</Box>
 	)
 }
 
-export default Login
+export default SignUp

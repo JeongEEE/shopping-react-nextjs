@@ -23,7 +23,7 @@ export default function Home() {
 		networkController.getAllProducts().then((data) => {
 			console.log(data);
 			setProducts(data);
-		});
+		}).catch(error => { });
 		console.log(db);
 
 		// firebase 로그인 상태 변경을 감지
@@ -53,7 +53,7 @@ export default function Home() {
 			<Grid container mb={5}>
 				<Grid>
 					<Image src="/images/bg1.jpg" alt="J Shopping" width={1100} height={250} />
-					<Grid container direction="row" justifyContent="space-between" alignItems="center">
+					<Grid mt={2} container direction="row" justifyContent="space-between" alignItems="center">
 						{products.map(product => (
 							<ProductItem product={product} key={product.id} />
 						))}

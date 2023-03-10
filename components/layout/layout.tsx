@@ -14,20 +14,21 @@ const Layout = (props) => {
 	const router = useRouter()
 	const [noNav, setNoNav] = useState(false);
 
-	useEffect(() => {
-		router.events.on('routeChangeComplete',  (url) => {
-			if(url === '/login') setNoNav(true)
-			else setNoNav(false)
-    })
-		return () => {
-			router.events.off('routeChangeComplete', () => { })
-		}
-	}, [])
+	// useEffect(() => {
+	// 	if(router.asPath == '/login' || router.asPath == '/login/signUp') setNoNav(true)
+	// 	router.events.on('routeChangeComplete',  (url) => {
+	// 		if(url === '/login' || url === '/login/signUp') setNoNav(true)
+	// 		else setNoNav(false)
+  //   })
+	// 	return () => {
+	// 		router.events.off('routeChangeComplete', () => { })
+	// 	}
+	// }, [])
 
   return (
     <Fragment>
 			<div css={mainContent}>
-				{noNav ? null : <MainNavigation />}
+				<MainNavigation />
 				<main>{props.children}</main>
 			</div>
     </Fragment>
