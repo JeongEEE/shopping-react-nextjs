@@ -5,12 +5,12 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { db } from '../../firebaseConfig'
 import { css, jsx } from '@emotion/react'
 
 const textdiv = css`
 	height: 2rem;
 `
-
 const btn = css`
 	width: 100%;
 `

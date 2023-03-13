@@ -9,7 +9,8 @@
 .header ul {
   list-style: none;
   display: flex;
-  align-items: baseline;
+  align-items: center;
+	align-content: center;
 	justify-content: flex-end;
   margin: 0;
   padding: 5px;
