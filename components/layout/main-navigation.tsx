@@ -3,12 +3,14 @@ import Link from 'next/link'
 import classes from './main-navigation.module.css'
 import Logo from './logo'
 import { useRecoilState } from 'recoil';
-import { loginStatus, userDataState } from '../../states/atoms';
+import { userDataState, basketState } from '../../states/atoms';
 import Button from '@mui/material/Button';
 import { auth } from '../../firebaseConfig'
 import { signOut } from "firebase/auth";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { css, jsx } from '@emotion/react'
+import { db } from '../../firebaseConfig'
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
 const userBtn = css`
 	color: black;
@@ -16,23 +18,36 @@ const userBtn = css`
 `
 
 function MainNavigation() {
-	const [status, setStatus] = useRecoilState(loginStatus);
 	const [userData, setUserData] = useRecoilState(userDataState);
+	const [basketData, setBasketData] = useRecoilState(basketState);
 	const [access, setAccess] = useState(false);
 	const [email, setEmail] = useState('');
 
-  useEffect(() => {
-		console.log('login-' ,status);
-		setAccess(status)
-		return () => {
-			
+	const fetchBasketData = () => {
+		try {
+			getDocs(query(collection(db, userData.email, 
+				'userData/basket'), orderBy("timeMillisecond", "desc")))
+			.then((snapshot) => {
+				const basket = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				setBasketData(basket)
+				console.log(basket);
+				
+			}).catch(err => { })
+		} catch(err) {
+			console.log(err);
 		}
-	}, [status])
+	}
 	
 	useEffect(() => {
-		console.log('userData-' ,userData);
-		if(status) setEmail(userData.email);
-		else setEmail('');
+		console.log('UserData-' ,userData);
+		if(userData.email) {
+			setEmail(userData.email);
+			setAccess(true)
+			fetchBasketData();
+		} else setEmail('');
 		return () => {
 			
 		}
@@ -41,7 +56,7 @@ function MainNavigation() {
 	
 	const logout = () => {
 		signOut(auth).then(() => {
-			setStatus(false)
+			setAccess(false)
 			setUserData({});
 		}).catch((error) => {
 			console.log(error);

@@ -8,6 +8,8 @@ import { css, jsx } from '@emotion/react'
 import { useRouter } from "next/router";
 import networkController from '../api/networkController'
 import LoadingButton from '@mui/lab/LoadingButton';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../../firebaseConfig'
 
 const loginWrap = css`
 	max-width: 500px;
@@ -41,10 +43,17 @@ const SignUp = () => {
 
 	const requestSignUp = async () => {
 		setLoading(true);
-		const user = await networkController.firebaseSignUp(id, pw);
-		console.log(user);
-		setLoading(false);
-		router.push("/login")
+		createUserWithEmailAndPassword(auth, id, pw)
+		.then((userCredential) => {
+			const user = userCredential.user;
+			console.log(user);
+			setLoading(false);
+			router.push("/login")
+		})
+		.catch((error) => {
+			console.log(error);
+			setLoading(false);
+		});
 	}
 
 	return (

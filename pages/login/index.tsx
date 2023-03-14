@@ -10,6 +10,8 @@ import networkController from '../api/networkController'
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useRecoilState } from 'recoil';
 import { userDataState } from '../../states/atoms'
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../../firebaseConfig'
 
 const loginWrap = css`
 	max-width: 500px;
@@ -49,11 +51,17 @@ const Login = () => {
 
 	const requestSignIn = async () => {
 		setLoading(true);
-		const user = await networkController.firebaseSignIn(id, pw);
-		console.log(user);
-		setUserData(user);
-		setLoading(false);
-		router.push("/")
+		signInWithEmailAndPassword(auth, id, pw)
+		.then((userCredential) => {
+			console.log('UserData - ', userCredential.user);
+			setUserData(userCredential.user);
+			setLoading(false);
+			router.push("/")
+		})
+		.catch((error) => {
+			console.log(error);
+			setLoading(false);
+		});
 	}
 
 	return (

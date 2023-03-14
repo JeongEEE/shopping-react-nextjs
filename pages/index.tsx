@@ -24,7 +24,6 @@ export default function Home() {
 			console.log(data);
 			setProducts(data);
 		}).catch(error => { });
-		console.log(db);
 		return () => {
 			console.log('컴포넌트가 화면에서 사라짐');
 		}
