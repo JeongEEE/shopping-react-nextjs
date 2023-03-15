@@ -63,7 +63,6 @@ const ProductDetail = ({ id }) => {
 			return;
 		}
 		if(checkAlreadyInBasket()) {
-			console.log('이미 장바구니에 있음');
 			enqueueSnackbar('이미 장바구니에 있는 상품입니다', { variant: 'info', autoHideDuration: 2000,
 				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
 			return;

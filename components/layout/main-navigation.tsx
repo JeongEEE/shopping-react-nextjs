@@ -98,7 +98,7 @@ function MainNavigation() {
 					{access ? <AccountCircleIcon color="success" /> : <AccountCircleIcon />}
 					{access 
 						? <Button variant="text" onClick={logout} css={userBtn}>로그아웃</Button> 
-						: <li><Link href="/login">로그인</Link></li>
+						: <li><Link href="/login" css={css`line-height: 22.5px;`}>로그인</Link></li>
 					}
 				</ul>
         <ul>

@@ -10,7 +10,20 @@ import networkController from './api/networkController'
 import ProductItem from '../components/productItem';
 import { db } from '../firebaseConfig'
 
-export default function Home() {
+export async function getStaticProps() {
+  try {
+		const data = await networkController.getAllProducts();
+		return {
+      props: {
+        productData: data,
+      },
+    };
+	} catch(err) {
+		console.log(err);
+	}
+}
+
+export default function Home({ productData }) {
 	const router = useRouter();
 	const [products, setProducts] = useState([]);
 
@@ -20,10 +33,7 @@ export default function Home() {
 
 	useEffect(() => {
 		console.log('컴포넌트가 화면에 나타남');
-		networkController.getAllProducts().then((data) => {
-			console.log(data);
-			setProducts(data);
-		}).catch(error => { });
+		setProducts(productData);
 		return () => {
 			console.log('컴포넌트가 화면에서 사라짐');
 		}

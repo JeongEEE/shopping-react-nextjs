@@ -59,7 +59,7 @@ const SignUp = () => {
 	return (
 		<Box mt={16} css={loginWrap}>
 			<Grid pt={3} container justifyContent="center">
-				<Typography variant="h4">J 쇼핑 회원가입</Typography>
+				<Typography variant="h4">J 쇼핑몰 회원가입</Typography>
 			</Grid>
 			<Grid pt={3} container justifyContent="center">
 				<TextField label="Email" variant="outlined" css={input} 
