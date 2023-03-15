@@ -13,13 +13,15 @@
 	align-content: center;
 	justify-content: flex-end;
   margin: 0;
-  padding: 5px;
-	gap: 0.5rem;
 	font-weight: bold;
+	height: 2.5rem;
 }
 
 .header li {
-  margin: 0 var(--size-4);
+	height: 2.5rem;
+	padding: 10px;
+	padding-left: 17px;
+	padding-right: 17px;
 }
 
 .header a {

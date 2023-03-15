@@ -11,6 +11,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { useRecoilState } from 'recoil';
 import { userDataState, basketState } from '../../states/atoms';
 import { formatDateKor } from '../../lib/utils';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
 const textdiv = css`
 	height: 2rem;
@@ -48,7 +49,7 @@ const ProductDetail = ({ id }) => {
   };
 
 	const checkAlreadyInBasket = () => {
-		if(basketData.length == 0) return true;
+		if(basketData.length == 0) return false;
 
 		const find = basketData.findIndex((el, index, arr) => el.title === product.title);
 		if(find == -1) return false;
@@ -56,8 +57,15 @@ const ProductDetail = ({ id }) => {
 	}
 
 	const addProductInBasket = async () => {
+		if(userData.email == undefined) {
+			enqueueSnackbar('로그인하고 이용해주세요', { variant: 'info', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
 		if(checkAlreadyInBasket()) {
 			console.log('이미 장바구니에 있음');
+			enqueueSnackbar('이미 장바구니에 있는 상품입니다', { variant: 'info', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
 			return;
 		}
 		const params = {
@@ -73,7 +81,15 @@ const ProductDetail = ({ id }) => {
 		}
 		await addDoc(collection(db, userData.email, 'userData/basket'), params)
 		.then((docRef) => {
-			
+			enqueueSnackbar('장바구니에 등록 완료', { variant: 'success', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			try {
+				let origin = JSON.parse(JSON.stringify(basketData));
+				origin.push({ id: docRef.id, ...params });
+				setBasketData(origin);
+			} catch(err) {
+				console.log(err);
+			}
 		}).catch(err => {
 			console.log(err);
 		})
@@ -84,7 +100,7 @@ const ProductDetail = ({ id }) => {
 			console.log(data);
 			setProduct(data);
 		});
-		console.log(userData);
+		console.log(basketData);
 		
 	}, [])
 	
@@ -121,6 +137,7 @@ const ProductDetail = ({ id }) => {
 					</Grid>
 				</Grid>
 			</Grid>
+			<SnackbarProvider preventDuplicate />
 		</Box>
 	)
 }

@@ -41,7 +41,6 @@ const Login = () => {
 	const goSignUpPage = () => {
 		router.push("/login/signUp")
 	}
-
 	const idInputOnChange = (e) => {
 		setId(e.target.value);
 	}

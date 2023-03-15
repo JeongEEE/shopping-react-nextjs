@@ -16,12 +16,26 @@ const userBtn = css`
 	color: black;
 	font-weight: bold;
 `
+const basketList = css`
+	position: relative;
+`
+const basketCountCss = css`
+	position: absolute;
+	top: 0;
+	right: 0px;
+	border-radius: 20px;
+	background-color: red;
+	color: black;
+	padding-top: 4px;
+	font-size: 0.8rem;
+`
 
 function MainNavigation() {
 	const [userData, setUserData] = useRecoilState(userDataState);
 	const [basketData, setBasketData] = useRecoilState(basketState);
 	const [access, setAccess] = useState(false);
 	const [email, setEmail] = useState('');
+	const [basketCount, setBasketCount] = useState(0);
 
 	const fetchBasketData = () => {
 		try {
@@ -33,6 +47,7 @@ function MainNavigation() {
 					return { id: v.id, ...item }
 				});
 				setBasketData(basket)
+				setBasketCount(basket.length)
 				console.log(basket);
 				
 			}).catch(err => { })
@@ -52,12 +67,21 @@ function MainNavigation() {
 			
 		}
 	}, [userData])
+
+	useEffect(() => {
+		setBasketCount(basketData.length)
+		return () => {
+			
+		}
+	}, [basketData])
+	
 	
 	
 	const logout = () => {
 		signOut(auth).then(() => {
 			setAccess(false)
 			setUserData({});
+			setBasketData([]);
 		}).catch((error) => {
 			console.log(error);
 		});
@@ -73,12 +97,26 @@ function MainNavigation() {
 					<div>{email}</div>
 					{access ? <AccountCircleIcon color="success" /> : <AccountCircleIcon />}
 					{access 
-						? <li><Button m={0} variant="text" onClick={logout} css={userBtn}>로그아웃</Button></li> 
+						? <Button variant="text" onClick={logout} css={userBtn}>로그아웃</Button> 
 						: <li><Link href="/login">로그인</Link></li>
 					}
 				</ul>
         <ul>
-          <li><Link href="/basket">장바구니</Link></li>
+          <li css={basketList}>
+						<Link href="/basket">장바구니</Link>
+						{basketCount >= 10 
+						? <div css={css`
+							${basketCountCss};
+							width: 20px;
+							padding-left: 4px;
+						`}>{basketCount}</div> 
+						: basketCount == 0 ? null 
+							: <div css={css`
+							${basketCountCss};
+							width: 17px;
+							padding-left: 4px;
+						`}>{basketCount}</div>}
+					</li>
           <li><Link href="/my-info">내정보</Link></li>
           <li><Link href="/white-test">WhiteTest</Link></li>
         </ul>

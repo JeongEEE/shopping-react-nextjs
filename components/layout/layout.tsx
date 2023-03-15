@@ -9,6 +9,7 @@ const mainContent = css`
 	min-width: 1100px;
 	margin-left: auto;
 	margin-right: auto;
+	min-height: 100vh;
 `
 
 const Layout = (props) => {
