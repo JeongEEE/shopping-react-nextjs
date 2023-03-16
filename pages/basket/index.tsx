@@ -10,7 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { useRecoilState } from 'recoil';
 import { userDataState, basketState } from '../../states/atoms'
 import { db } from '../../firebaseConfig'
-import { getDocs, query, collection, orderBy, doc, deleteDoc } from "firebase/firestore";
+import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
 const detailCss = css`
@@ -56,6 +56,12 @@ const Basket = () => {
 		}
 	}
 
+	const updateBasketData = (count, docId) => {
+		updateDoc(doc(db, userData.email, 'userData/basket', docId), {
+			"count": count
+		});
+	}
+
 	const inputOnChange = (e, index) => {
 		const basketCopy = JSON.parse(JSON.stringify(basket));
 		
@@ -63,14 +69,17 @@ const Basket = () => {
 			basketCopy[index].count = '1'
 			setBasket(basketCopy)
 			setLocalBasket(basketCopy)
+			updateBasketData('1', basketCopy[index].id)
 		} else if(Number(e.target.value) > 10) {
 			basketCopy[index].count = '10'
 			setBasket(basketCopy)
 			setLocalBasket(basketCopy)
+			updateBasketData('10', basketCopy[index].id)
 		} else {
 			basketCopy[index].count = e.target.value
 			setBasket(basketCopy)
 			setLocalBasket(basketCopy)
+			updateBasketData(e.target.value, basketCopy[index].id)
 		}
   };
 
@@ -91,7 +100,18 @@ const Basket = () => {
 	}
 
 	const checkedDeleteProduct = () => {
-		
+		let basketCopy = JSON.parse(JSON.stringify(basket));
+		basket.forEach((product, index) => {
+			if(product.checked) {
+				deleteDoc(doc(db, userData.email, 'userData/basket', product.id))
+				.then((snapshot) => { }).catch(err => { })
+			}
+		})
+		basketCopy = basketCopy.filter((el, idx) => {
+			return el.checked != true // true인것 다 지우기
+		})
+		setBasket(basketCopy);
+		setLocalBasket(basketCopy);
 	}
 
 	const deleteProduct = (docId, index) => {
@@ -108,10 +128,7 @@ const Basket = () => {
 
 	useEffect(() => {
 		if(userData.email == undefined) setAuth(false);
-		else {
-			setAuth(true);
-			fetchBasketData();
-		}
+		else setAuth(true);
 		return () => {
 			
 		}
@@ -148,11 +165,13 @@ const Basket = () => {
 							css={css`background-color:#e9e9e9;`}>
 							<Checkbox checked={allCheck} onChange={allCheckHandler} /> 
 							<Grid item mr={2}>전체선택</Grid>
-							<Button variant="contained" css={css`height:2rem;`}>선택삭제</Button>
+							<Button variant="contained" css={css`height:2rem;`}
+								onClick={checkedDeleteProduct}>선택삭제</Button>
 						</Grid>
 						<Grid container css={css`border-bottom:1px solid black;`}></Grid>
 						{basket.map((product, index) => (
-							<Grid container direction="row" justifyContent="center" p={2} key={product.id}>
+							<Grid container direction="row" justifyContent="center" p={2} key={product.id}
+								css={css`border-bottom:1px solid gray;`}>
 								<Grid item container xs={2} p={2} alignItems="start">
 									<Checkbox checked={product.checked} 
 										onChange={(e) => checkHandler(e, index)} />

@@ -17,7 +17,7 @@ export async function getStaticProps() {
       props: {
         productData: data,
       },
-			revalidate: 60, // seconds
+			revalidate: 600, // seconds
     };
 	} catch(err) {
 		console.log(err);
