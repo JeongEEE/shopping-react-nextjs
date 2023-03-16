@@ -75,6 +75,7 @@ const ProductDetail = ({ id }) => {
 			title: product.title,
 			discription: product.description,
 			count: productCount,
+			checked: true,
 			createdTime: formatDateKor(new Date()),
 			timeMillisecond: Date.now()
 		}
