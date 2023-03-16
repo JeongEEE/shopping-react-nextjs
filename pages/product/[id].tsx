@@ -112,10 +112,10 @@ const ProductDetail = ({ id }) => {
 						<img src={product.image} alt={product.title} width={400} height={400} />
 					</Grid>
 					<Grid item container xs={6} p={2}>
-						<Grid>
+						<Grid container>
 							<Typography variant="h4">{product.title}</Typography>
 						</Grid>
-						<Grid justifyContent="right">
+						<Grid container justifyContent="right" mt={1} mb={1}>
 							<Typography variant="h5" css={textdiv}>{product.price}$</Typography>
 						</Grid>
 						<Grid>
