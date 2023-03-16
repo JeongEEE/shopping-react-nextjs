@@ -31,13 +31,24 @@ const Basket = () => {
 	const [localBasket, setLocalBasket] = useRecoilState(basketState);
 	const [auth, setAuth] = useState(false);
 	const [basket, setBasket] = useState([]);
-	const [productCount, setProductCount] = useState('1');
+	const [totalPrice, setTotalPrice] = useState(0);
 
-	const inputOnChange = (e) => {
-		const value = Number(e.target.value);
-		if(value < 1) setProductCount('1');
-		else if(value > 10) setProductCount('10');
-    else setProductCount(e.target.value);
+	const inputOnChange = (e, index) => {
+		const basketCopy = JSON.parse(JSON.stringify(basket));
+		
+		if(Number(e.target.value) < 1) {
+			basketCopy[index].count = '1'
+			setBasket(basketCopy)
+			setLocalBasket(basketCopy)
+		} else if(Number(e.target.value) > 10) {
+			basketCopy[index].count = '10'
+			setBasket(basketCopy)
+			setLocalBasket(basketCopy)
+		} else {
+			basketCopy[index].count = e.target.value
+			setBasket(basketCopy)
+			setLocalBasket(basketCopy)
+		}
   };
 
 	useEffect(() => {
@@ -50,7 +61,11 @@ const Basket = () => {
 
 	useEffect(() => {
 		setBasket(JSON.parse(JSON.stringify(localBasket)));
-	
+		let total = 0;
+		localBasket.forEach((product) => {
+			total += product.count * product.price;
+		})
+		setTotalPrice(Math.ceil(total * 100) / 100);
 		return () => {
 			
 		}
@@ -65,7 +80,7 @@ const Basket = () => {
 					<Typography pl={1} variant="h4">장바구니</Typography>
 					<Grid container css={css`border-bottom:1px solid black;`}></Grid>
 					{auth 
-						? basket.map(product => (
+						? basket.map((product, index) => (
 								<Grid container direction="row" justifyContent="center" p={2} key={product.id}>
 									<Grid item container xs={2} p={2}>
 										<img src={product.image} alt={product.title} width={100} height={100} />
@@ -73,18 +88,31 @@ const Basket = () => {
 									<Grid item container xs={8} p={2}>
 										<Typography variant="h5" css={detailCss}>{product.title}</Typography>
 										<Grid container direction="row" justifyContent="start">
-											<Typography variant="h6" align="right">{product.price}$</Typography>
+											<Typography variant="h6" align="right" mr={2}>
+												{product.price * product.count}$
+											</Typography>
 											<input type="number" css={input} min={1} max={10} 
-												value={productCount} onChange={inputOnChange} />
+												value={product.count} 
+												onChange={e => inputOnChange(e, index)} />
 										</Grid>
 									</Grid>
 									<Grid item container xs={2} p={2} justifyContent="end">
-										<Button variant="contained">삭제</Button>
+										<Button variant="contained" css={css`height:2rem;`}>삭제</Button>
 									</Grid>
 								</Grid>
 							))
 						: <Grid container p={16} justifyContent="center"
-								css={css`font-size:2.5rem;`}>로그인 하고 이용해주세요</Grid>}
+								css={css`font-size:2.5rem;`}>로그인 하고 이용해주세요</Grid>
+					}
+					<Grid container css={css`border-bottom:1px solid black;`}></Grid>
+					<Grid container direction="row" justifyContent="center">
+						<Grid item container xs={10} p={2} justifyContent="end" alignItems="center">
+							<Typography variant="h6">합계 : {totalPrice}$</Typography>
+						</Grid>
+						<Grid item container xs={2} p={2}>
+							<Button variant="contained" css={css`width:100%;height:2.5rem;`}>구매하기</Button>
+						</Grid>
+					</Grid>
 				</Grid>
 			</Grid>
 		</Box>

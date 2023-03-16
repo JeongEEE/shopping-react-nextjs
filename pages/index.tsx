@@ -17,6 +17,7 @@ export async function getStaticProps() {
       props: {
         productData: data,
       },
+			revalidate: 60, // seconds
     };
 	} catch(err) {
 		console.log(err);
@@ -51,7 +52,7 @@ export default function Home({ productData }) {
 		<Box>
 			<Grid container mb={5}>
 				<Grid>
-					<Image src="/images/bg1.jpg" alt="J Shopping" width={1100} height={250} />
+					<Image src="/images/bg1.jpg" alt="J Shopping" width={1100} height={250} priority />
 					<Grid mt={2} container direction="row" justifyContent="space-between" alignItems="center">
 						{products.map(product => (
 							<ProductItem product={product} key={product.id} />

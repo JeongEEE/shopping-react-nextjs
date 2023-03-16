@@ -17,7 +17,7 @@ const detailCss = css`
 const focus = css`
 	transition: transform .2s;
 	&:hover {
-		transform: scale(1.05);
+		transform: scale(1.025);
 		z-index: 3;
 		box-shadow: 1px 1px 1px 1px gray;
 	}
