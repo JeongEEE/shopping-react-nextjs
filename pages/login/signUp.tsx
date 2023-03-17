@@ -10,6 +10,7 @@ import networkController from '../api/networkController'
 import LoadingButton from '@mui/lab/LoadingButton';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../firebaseConfig'
+import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
 const loginWrap = css`
 	max-width: 500px;
@@ -51,8 +52,13 @@ const SignUp = () => {
 			router.push("/login")
 		})
 		.catch((error) => {
-			console.log(error);
+			console.log(error.message);
 			setLoading(false);
+			if(error.message === 'Firebase: Error (auth/email-already-in-use).') {
+				enqueueSnackbar('이미 가입된 이메일입니다', 
+					{ variant: 'warning', autoHideDuration: 2000,
+						anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			}
 		});
 	}
 
@@ -73,6 +79,7 @@ const SignUp = () => {
 				<LoadingButton variant="contained" css={btn} onClick={requestSignUp}
 					loading={loading}>회원가입</LoadingButton>
 			</Grid>
+			<SnackbarProvider preventDuplicate />
 		</Box>
 	)
 }

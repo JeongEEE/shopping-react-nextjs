@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import classes from './main-navigation.module.css'
 import Logo from './logo'
+import { useRouter } from "next/router";
 import { useRecoilState } from 'recoil';
 import { userDataState, basketState } from '../../states/atoms';
 import Button from '@mui/material/Button';
@@ -38,18 +39,28 @@ const basketCountCss = css`
 `
 
 function MainNavigation() {
+	const router = useRouter();
 	const [userData, setUserData] = useRecoilState(userDataState);
 	const [basketData, setBasketData] = useRecoilState(basketState);
 	const [access, setAccess] = useState(false);
 	const [email, setEmail] = useState('');
 	const [basketCount, setBasketCount] = useState(0);
+	const [mounted, setMounted] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const menuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+	const handleClose = () => {
     setAnchorEl(null);
+  };
+  const goWishList = () => {
+    setAnchorEl(null);
+		router.push('/basket/wish-list');
+  };
+	const goMyInfo = () => {
+    setAnchorEl(null);
+		router.push('/my-info');
   };
 
 	const fetchBasketData = () => {
@@ -89,6 +100,12 @@ function MainNavigation() {
 			
 		}
 	}, [basketData])
+
+	useEffect(() => {
+		// Next Link태그는 새로고침시 pre랜더된 html과 일치하지않는 hydration 오류가 발생하기때문에
+		// 마운트된 후에 조건랜더링을 해야함
+		setMounted(true);
+	}, [])
 	
 	const logoutPopup = () => {
 		confirmAlert({ title: '로그아웃', message: '로그아웃 하시겠습니까?',
@@ -125,13 +142,17 @@ function MainNavigation() {
       <nav>
 				<ul>
 					<div>{email}</div>
-					{access ? <AccountCircleIcon color="success" /> : <AccountCircleIcon />}
-					{access 
+					{access && mounted ? <AccountCircleIcon color="success" /> : <AccountCircleIcon />}
+					{access && mounted
 						? <Button variant="text" onClick={logoutPopup} css={userBtn}>로그아웃</Button> 
 						: <li><Link href="/login" css={css`line-height: 22.5px;`}>로그인</Link></li>
 					}
 				</ul>
         <ul>
+					{userData.email == 'test@test.com' && mounted
+						?	<li><Link href="/white-test">WhiteTest</Link></li>
+						: <li></li>
+					}
           <li css={basketList}>
 						<Link href="/basket">장바구니</Link>
 						{basketCount >= 10 
@@ -157,11 +178,10 @@ function MainNavigation() {
 						<Menu anchorEl={anchorEl} open={open} onClose={handleClose}
 							MenuListProps={{'aria-labelledby': 'basic-button',}} 
 							disableScrollLock={true}>
-							<MenuItem onClick={handleClose}>찜 목록</MenuItem>
-							<MenuItem onClick={handleClose}>내정보</MenuItem>
+							<MenuItem onClick={goWishList}>찜 목록</MenuItem>
+							<MenuItem onClick={goMyInfo}>내정보</MenuItem>
 						</Menu>
 					</li>
-          <li><Link href="/white-test">WhiteTest</Link></li>
         </ul>
       </nav>
     </header>
