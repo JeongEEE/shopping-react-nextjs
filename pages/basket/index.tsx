@@ -12,6 +12,8 @@ import { userDataState, basketState } from '../../states/atoms'
 import { db } from '../../firebaseConfig'
 import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
+import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const detailCss = css`
 	width: 100%;
@@ -99,6 +101,43 @@ const Basket = () => {
 		setLocalBasket(basketCopy);
 	}
 
+	const deletePopup = (type, docId, index) => {
+		switch (type) {
+			case 'all':
+				confirmAlert({ title: '선택삭제', message: '선택하신 상품을 모두 삭제 하시겠습니까?',
+					buttons: [
+						{
+							label: '예',
+							onClick: () => {
+								checkedDeleteProduct();
+							}
+						},
+						{
+							label: '아니오',
+							onClick: () => { }
+						}
+					]
+				});
+				break;
+			case 'single':
+				confirmAlert({ title: '삭제', message: '해당 상품을 삭제 하시겠습니까?',
+					buttons: [
+						{
+							label: '예',
+							onClick: () => {
+								deleteProduct(docId, index);
+							}
+						},
+						{
+							label: '아니오',
+							onClick: () => { }
+						}
+					]
+				});
+				break;
+		}
+	}
+
 	const checkedDeleteProduct = () => {
 		let basketCopy = JSON.parse(JSON.stringify(basket));
 		basket.forEach((product, index) => {
@@ -166,7 +205,7 @@ const Basket = () => {
 							<Checkbox checked={allCheck} onChange={allCheckHandler} /> 
 							<Grid item mr={2}>전체선택</Grid>
 							<Button variant="contained" css={css`height:2rem;`}
-								onClick={checkedDeleteProduct}>선택삭제</Button>
+								onClick={() => deletePopup('all', null, null)}>선택삭제</Button>
 						</Grid>
 						<Grid container css={css`border-bottom:1px solid black;`}></Grid>
 						{basket.map((product, index) => (
@@ -190,7 +229,7 @@ const Basket = () => {
 								</Grid>
 								<Grid item container xs={2} p={2} justifyContent="end">
 									<Button variant="contained" css={css`height:2rem;`}
-										onClick={() => deleteProduct(product.id, index)}>삭제</Button>
+										onClick={() => deletePopup('single', product.id, index)}>삭제</Button>
 								</Grid>
 							</Grid>
 						))}

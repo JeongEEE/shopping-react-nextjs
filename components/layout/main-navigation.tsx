@@ -5,16 +5,23 @@ import Logo from './logo'
 import { useRecoilState } from 'recoil';
 import { userDataState, basketState } from '../../states/atoms';
 import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { auth } from '../../firebaseConfig'
 import { signOut } from "firebase/auth";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { css, jsx } from '@emotion/react'
 import { db } from '../../firebaseConfig'
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const userBtn = css`
 	color: black;
 	font-weight: bold;
+	&:hover {
+		background-color: transparent;
+	}
 `
 const basketList = css`
 	position: relative;
@@ -36,6 +43,14 @@ function MainNavigation() {
 	const [access, setAccess] = useState(false);
 	const [email, setEmail] = useState('');
 	const [basketCount, setBasketCount] = useState(0);
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const menuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
 	const fetchBasketData = () => {
 		try {
@@ -75,7 +90,22 @@ function MainNavigation() {
 		}
 	}, [basketData])
 	
-	
+	const logoutPopup = () => {
+		confirmAlert({ title: '로그아웃', message: '로그아웃 하시겠습니까?',
+      buttons: [
+        {
+          label: '예',
+          onClick: () => {
+						logout();
+					}
+        },
+        {
+          label: '아니오',
+          onClick: () => { }
+        }
+      ]
+    });
+	}
 	
 	const logout = () => {
 		signOut(auth).then(() => {
@@ -97,7 +127,7 @@ function MainNavigation() {
 					<div>{email}</div>
 					{access ? <AccountCircleIcon color="success" /> : <AccountCircleIcon />}
 					{access 
-						? <Button variant="text" onClick={logout} css={userBtn}>로그아웃</Button> 
+						? <Button variant="text" onClick={logoutPopup} css={userBtn}>로그아웃</Button> 
 						: <li><Link href="/login" css={css`line-height: 22.5px;`}>로그인</Link></li>
 					}
 				</ul>
@@ -114,10 +144,23 @@ function MainNavigation() {
 							: <div css={css`
 							${basketCountCss};
 							width: 17px;
-							padding-left: 4px;
+							padding-left: 5px;
 						`}>{basketCount}</div>}
 					</li>
-          <li><Link href="/my-info">내정보</Link></li>
+          <li css={css`padding-top:3px !important;`}>
+						<Button variant="text" css={css`${userBtn};padding:0;font-size:1rem;`} 
+							aria-controls={open ? 'basic-menu' : undefined}
+							aria-haspopup="true" aria-expanded={open ? 'true' : undefined}
+							onClick={menuClick}>
+							마이페이지
+						</Button>
+						<Menu anchorEl={anchorEl} open={open} onClose={handleClose}
+							MenuListProps={{'aria-labelledby': 'basic-button',}} 
+							disableScrollLock={true}>
+							<MenuItem onClick={handleClose}>찜 목록</MenuItem>
+							<MenuItem onClick={handleClose}>내정보</MenuItem>
+						</Menu>
+					</li>
           <li><Link href="/white-test">WhiteTest</Link></li>
         </ul>
       </nav>
