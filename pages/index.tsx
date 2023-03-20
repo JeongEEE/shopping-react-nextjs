@@ -9,13 +9,18 @@ import Typography from '@mui/material/Typography';
 import networkController from './api/networkController'
 import ProductItem from '../components/productItem';
 import { db } from '../firebaseConfig'
+import { useRecoilState } from 'recoil';
+import { wishState } from '../states/atoms';
 
 export async function getStaticProps() {
   try {
 		const data = await networkController.getAllProducts();
+		data.forEach(item => {
+			item.wish = false;
+		})
 		return {
       props: {
-        productData: data,
+        productData: data
       },
 			revalidate: 600, // seconds
     };
@@ -27,6 +32,7 @@ export async function getStaticProps() {
 export default function Home({ productData }) {
 	const router = useRouter();
 	const [products, setProducts] = useState([]);
+	const [wishData, setWishData] = useRecoilState(wishState);
 
 	function goWhiteTest() {
 		router.push("/white-test")
@@ -34,7 +40,16 @@ export default function Home({ productData }) {
 
 	useEffect(() => {
 		console.log('컴포넌트가 화면에 나타남');
-		setProducts(productData);
+		if(wishData.length != 0) {
+			let newArray = JSON.parse(JSON.stringify(productData));
+			newArray.forEach((product, idx) => {
+				const find = wishData.findIndex((el, index, arr) => el.title === product.title);
+				if(find != -1) product.wish = true;
+			})
+			setProducts(newArray);
+		} else {
+			serProducts(productData);
+		}
 		return () => {
 			console.log('컴포넌트가 화면에서 사라짐');
 		}

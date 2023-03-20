@@ -9,7 +9,7 @@ import { css, jsx } from '@emotion/react'
 import { db } from '../../firebaseConfig'
 import { collection, addDoc } from "firebase/firestore";
 import { useRecoilState } from 'recoil';
-import { userDataState, basketState } from '../../states/atoms';
+import { userDataState, wishState, basketState } from '../../states/atoms';
 import { formatDateKor } from '../../lib/utils';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
@@ -39,6 +39,7 @@ const ProductDetail = ({ id }) => {
 	const [product, setProduct] = useState([]);
 	const [productCount, setProductCount] = useState('1');
 	const [userData, setUserData] = useRecoilState(userDataState);
+	const [wishData, setWishData] = useRecoilState(wishState);
 	const [basketData, setBasketData] = useRecoilState(basketState);
 
 	const inputOnChange = (e) => {
@@ -54,6 +55,52 @@ const ProductDetail = ({ id }) => {
 		const find = basketData.findIndex((el, index, arr) => el.title === product.title);
 		if(find == -1) return false;
 		else return true;
+	}
+	const checkAlreadyInWish = () => {
+		if(wishData.length == 0) return false;
+
+		const find = wishData.findIndex((el, index, arr) => el.title === product.title);
+		if(find == -1) return false;
+		else return true;
+	}
+
+	const addProductInWishList = async () => {
+		if(userData.email == undefined) {
+			enqueueSnackbar('로그인하고 이용해주세요', { variant: 'info', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
+		if(checkAlreadyInWish()) {
+			enqueueSnackbar('이미 찜목록에 있는 상품입니다', { variant: 'info', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
+		const params = {
+			email: userData.email,
+			category: product.category,
+			image: product.image,
+			price: product.price,
+			title: product.title,
+			discription: product.description,
+			count: productCount,
+			checked: true,
+			createdTime: formatDateKor(new Date()),
+			timeMillisecond: Date.now()
+		}
+		await addDoc(collection(db, userData.email, 'userData/wishList'), params)
+		.then((docRef) => {
+			enqueueSnackbar('찜목록에 등록 완료', { variant: 'success', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }});
+			try {
+				let origin = JSON.parse(JSON.stringify(wishData));
+				origin.push({ id: docRef.id, ...params });
+				setWishData(origin);
+			} catch(err) {
+				console.log(err);
+			}
+		}).catch(err => {
+			console.log(err);
+		})
 	}
 
 	const addProductInBasket = async () => {
@@ -98,10 +145,9 @@ const ProductDetail = ({ id }) => {
 	useEffect(() => {
 		networkController.getProductData(id).then((data) => {
 			console.log(data);
-			setProduct(data);
+			setProduct({...data, favorite: false});
 		});
 		console.log(basketData);
-		
 	}, [])
 	
 	return (
@@ -126,11 +172,15 @@ const ProductDetail = ({ id }) => {
 								<input type="number" css={input} min={1} max={10} 
 									value={productCount} onChange={inputOnChange} />
 							</Grid>
-							<Grid item container xs={5} p={1}>
+							<Grid item container xs={3} p={1}>
+								<Button variant="contained" css={btn} onClick={addProductInWishList}>
+									찜 하기</Button>
+							</Grid>
+							<Grid item container xs={4} p={1}>
 								<Button variant="contained" css={btn} onClick={addProductInBasket}>
 									장바구니에 담기</Button>
 							</Grid>
-							<Grid item container xs={5} p={1}>
+							<Grid item container xs={3} p={1}>
 								<Button variant="contained" css={btn}>구매하기</Button>
 							</Grid>
 						</Grid>

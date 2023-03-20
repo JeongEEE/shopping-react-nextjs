@@ -4,7 +4,7 @@ import classes from './main-navigation.module.css'
 import Logo from './logo'
 import { useRouter } from "next/router";
 import { useRecoilState } from 'recoil';
-import { userDataState, basketState } from '../../states/atoms';
+import { userDataState, wishState, basketState } from '../../states/atoms';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -41,6 +41,7 @@ const basketCountCss = css`
 function MainNavigation() {
 	const router = useRouter();
 	const [userData, setUserData] = useRecoilState(userDataState);
+	const [wishData, setWishData] = useRecoilState(wishState);
 	const [basketData, setBasketData] = useRecoilState(basketState);
 	const [access, setAccess] = useState(false);
 	const [email, setEmail] = useState('');
@@ -63,6 +64,23 @@ function MainNavigation() {
 		router.push('/my-info');
   };
 
+	const fetchWishData = () => {
+		try {
+			getDocs(query(collection(db, userData.email, 
+				'userData/wishList'), orderBy("timeMillisecond", "desc")))
+			.then((snapshot) => {
+				const wishList = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				setWishData(wishList)
+				console.log('wishList', wishList);
+			}).catch(err => { })
+		} catch(err) {
+			console.log(err);
+		}
+	}
+
 	const fetchBasketData = () => {
 		try {
 			getDocs(query(collection(db, userData.email, 
@@ -74,7 +92,7 @@ function MainNavigation() {
 				});
 				setBasketData(basket)
 				setBasketCount(basket.length)
-				console.log(basket);
+				console.log('basket', basket);
 				
 			}).catch(err => { })
 		} catch(err) {
@@ -88,6 +106,7 @@ function MainNavigation() {
 			setEmail(userData.email);
 			setAccess(true)
 			fetchBasketData();
+			fetchWishData();
 		} else setEmail('');
 		return () => {
 			

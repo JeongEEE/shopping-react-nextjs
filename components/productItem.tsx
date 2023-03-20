@@ -3,6 +3,8 @@ import Link from 'next/link'
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { css } from '@emotion/react'
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const detailCss = css`
 	width: 100%;
@@ -30,7 +32,10 @@ const ProductItem = ({ product }) => {
 				<Grid container justifyContent="center">
 					<img src={product.image} alt={product.title} width={200} height={200} />
 					<Typography variant="h5" css={detailCss}>{product.title}</Typography>
-					<Typography variant="h6" align="right">{product.price}$</Typography>
+					<Grid container direction="row" justifyContent="space-between" alignItems="center">
+						<Typography variant="h6" align="right">{product.price}$</Typography>
+						{product.wish ? <FavoriteIcon css={css`color:red;`} /> : <FavoriteBorderOutlinedIcon />}
+					</Grid>
 				</Grid>
 			</Link>
 		</Grid>

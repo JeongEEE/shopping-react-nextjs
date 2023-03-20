@@ -14,6 +14,12 @@ export const userDataState = atom({
 	effects_UNSTABLE: [persistAtom],
 });
 
+export const wishState = atom({
+  key: 'wishState',
+	default: [],
+	effects_UNSTABLE: [persistAtom],
+});
+
 export const basketState = atom({
   key: 'basketState',
 	default: [],
