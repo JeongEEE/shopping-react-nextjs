@@ -12,12 +12,23 @@ import { useRecoilState } from 'recoil';
 import { userDataState, wishState, basketState } from '../../states/atoms';
 import { formatDateKor } from '../../lib/utils';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const textdiv = css`
 	height: 2rem;
 `
 const btn = css`
 	width: 100%;
+`
+const wishBtn = css`
+	width: 100%;
+	background-color: white;
+	border: 1px solid black;
+	color: black;
+	&:hover {
+		background-color: white;
+	}
 `
 const input = css`
 	width: 100%;
@@ -95,6 +106,9 @@ const ProductDetail = ({ id }) => {
 				let origin = JSON.parse(JSON.stringify(wishData));
 				origin.push({ id: docRef.id, ...params });
 				setWishData(origin);
+				setProduct((prev) => {
+					return { ...prev, wish: true }
+				})
 			} catch(err) {
 				console.log(err);
 			}
@@ -145,7 +159,9 @@ const ProductDetail = ({ id }) => {
 	useEffect(() => {
 		networkController.getProductData(id).then((data) => {
 			console.log(data);
-			setProduct({...data, favorite: false});
+			const find = wishData.findIndex((el, index, arr) => el.title === data.title);
+			if(find == -1) setProduct({...data, wish: false});
+			else setProduct({...data, wish: true});
 		});
 		console.log(basketData);
 	}, [])
@@ -173,8 +189,10 @@ const ProductDetail = ({ id }) => {
 									value={productCount} onChange={inputOnChange} />
 							</Grid>
 							<Grid item container xs={3} p={1}>
-								<Button variant="contained" css={btn} onClick={addProductInWishList}>
-									찜 하기</Button>
+								<Button variant="contained" css={wishBtn} onClick={addProductInWishList}>
+									{product.wish ? <FavoriteIcon css={css`color:red;`} /> : <FavoriteBorderOutlinedIcon />}
+									찜 하기
+								</Button>
 							</Grid>
 							<Grid item container xs={4} p={1}>
 								<Button variant="contained" css={btn} onClick={addProductInBasket}>

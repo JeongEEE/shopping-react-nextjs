@@ -191,11 +191,11 @@ function MainNavigation() {
 						<Button variant="text" css={css`${userBtn};padding:0;font-size:1rem;`} 
 							aria-controls={open ? 'basic-menu' : undefined}
 							aria-haspopup="true" aria-expanded={open ? 'true' : undefined}
-							onClick={menuClick}>
+							onClick={menuClick} onMouseOver={menuClick}>
 							마이페이지
 						</Button>
 						<Menu anchorEl={anchorEl} open={open} onClose={handleClose}
-							MenuListProps={{'aria-labelledby': 'basic-button',}} 
+							MenuListProps={{'aria-labelledby': 'basic-button', onMouseLeave: handleClose}} 
 							disableScrollLock={true}>
 							<MenuItem onClick={goWishList}>찜 목록</MenuItem>
 							<MenuItem onClick={goMyInfo}>내정보</MenuItem>
