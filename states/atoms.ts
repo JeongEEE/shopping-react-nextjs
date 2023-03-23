@@ -26,6 +26,12 @@ export const basketState = atom({
 	effects_UNSTABLE: [persistAtom],
 });
 
+export const categoriesState = atom({
+  key: 'categoriesState',
+	default: [],
+	effects_UNSTABLE: [persistAtom],
+});
+
 // ########################################## sample
 export const sample = atom({
   key: 'sample',

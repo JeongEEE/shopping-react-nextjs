@@ -11,4 +11,9 @@ export default {
 		const response = await Axios({ url, method: 'GET' });
     return Promise.resolve(response.data);
 	},
+	async getAllCategories(id): Promise<Array<string>> {
+		const url = `https://fakestoreapi.com/products/categories`;
+		const response = await Axios({ url, method: 'GET' });
+    return Promise.resolve(response.data);
+	},
 }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import classes from './main-navigation.module.css'
+import networkController from '../../pages/api/networkController'
 import Logo from './logo'
 import { useRouter } from "next/router";
 import { useRecoilState } from 'recoil';
-import { userDataState, wishState, basketState } from '../../states/atoms';
+import { userDataState, wishState, basketState, categoriesState } from '../../states/atoms';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { auth } from '../../firebaseConfig'
@@ -16,6 +18,7 @@ import { db } from '../../firebaseConfig'
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const userBtn = css`
 	color: black;
@@ -37,23 +40,45 @@ const basketCountCss = css`
 	padding-top: 4px;
 	font-size: 0.8rem;
 `
+const categoryBtn = css`
+	background-color: #415df9;
+	height: 100%;
+	width: 100px;
+	border-radius: 0px;
+	color: white;
+	margin-right: 25px;
+	&:hover {
+		background-color: #415df9;
+		color: white;
+	}
+`
 
 function MainNavigation() {
 	const router = useRouter();
 	const [userData, setUserData] = useRecoilState(userDataState);
 	const [wishData, setWishData] = useRecoilState(wishState);
 	const [basketData, setBasketData] = useRecoilState(basketState);
+	const [categories, setCategories] = useRecoilState(categoriesState);
 	const [access, setAccess] = useState(false);
 	const [email, setEmail] = useState('');
 	const [basketCount, setBasketCount] = useState(0);
 	const [mounted, setMounted] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
+
   const open = Boolean(anchorEl);
   const menuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 	const handleClose = () => {
     setAnchorEl(null);
+  };
+	const open2 = Boolean(anchorEl2);
+  const menuClick2 = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl2(event.currentTarget);
+  };
+	const handleClose2 = () => {
+    setAnchorEl2(null);
   };
   const goWishList = () => {
     setAnchorEl(null);
@@ -63,6 +88,16 @@ function MainNavigation() {
     setAnchorEl(null);
 		router.push('/my-info');
   };
+
+	const fetchCategories = async () => {
+		try {
+			const data = await networkController.getAllCategories();
+			console.log('categories', data);
+			setCategories(data);
+		} catch(err) {
+			console.log(err);
+		}
+	}
 
 	const fetchWishData = () => {
 		try {
@@ -124,6 +159,7 @@ function MainNavigation() {
 		// Next Link태그는 새로고침시 pre랜더된 html과 일치하지않는 hydration 오류가 발생하기때문에
 		// 마운트된 후에 조건랜더링을 해야함
 		setMounted(true);
+		fetchCategories();
 	}, [])
 	
 	const logoutPopup = () => {
@@ -155,13 +191,32 @@ function MainNavigation() {
 
   return (
     <header className={classes.header}>
-      <Link href="/">
-        <Logo />
-      </Link>
+			<Grid container direction="row" justifyContent="left" alignItems="center"
+				css={css`width:300px;height:100%;`}>
+				<Button css={categoryBtn}
+					aria-controls={open2 ? 'basic-menu' : undefined}
+					aria-haspopup="true" aria-expanded={open2 ? 'true' : undefined}
+					onClick={menuClick2} onMouseOver={menuClick2}>
+					<Grid container justifyContent="center" alignItems="center">
+						<MenuIcon css={css`color:white;`} sx={{fontSize: 40}} />
+						카테고리
+					</Grid>
+				</Button>
+				<Menu anchorEl={anchorEl2} open={open2} onClose={handleClose2}
+					MenuListProps={{'aria-labelledby': 'basic-button', onMouseLeave: handleClose2}} 
+					disableScrollLock={true}>
+					{categories.map(item => (
+						<MenuItem key={item}>{item}</MenuItem>
+					))}
+				</Menu>
+				<Link href="/">
+					<Logo />
+				</Link>
+			</Grid>
       <nav>
 				<ul>
 					<div>{email}</div>
-					{access && mounted ? <AccountCircleIcon color="success" /> : <AccountCircleIcon />}
+					{access && mounted ? <AccountCircleIcon color="info" /> : <AccountCircleIcon />}
 					{access && mounted
 						? <Button variant="text" onClick={logoutPopup} css={userBtn}>로그아웃</Button> 
 						: <li><Link href="/login" css={css`line-height: 22.5px;`}>로그인</Link></li>

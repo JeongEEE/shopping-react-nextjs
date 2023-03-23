@@ -1,4 +1,5 @@
 # React NextJs 쇼핑몰 웹 만들기
+Node v.18.13.0
 React 18 , Next.js, Typescript, Recoil, Material UI, Emotion, Firebase
 
 ## Getting Started

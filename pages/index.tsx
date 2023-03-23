@@ -11,6 +11,7 @@ import ProductItem from '../components/productItem';
 import { db } from '../firebaseConfig'
 import { useRecoilState } from 'recoil';
 import { wishState } from '../states/atoms';
+import Carousel from 'react-material-ui-carousel'
 
 export async function getStaticProps() {
   try {
@@ -62,12 +63,17 @@ export default function Home({ productData }) {
 		deps 파라미터를 생략한다면, 컴포넌트가 리렌더링 될 때마다 호출이 됩니다.
 	*/
 	
-	
   return (
 		<Box>
 			<Grid container mb={5}>
 				<Grid>
-					<Image src="/images/bg1.jpg" alt="J Shopping" width={1100} height={250} priority />
+					<Carousel>
+						<Image src="/images/sale2.png" alt="J Shopping" width={1100} height={300} priority />
+						<Image src="/images/sale1.png" alt="J Shopping" width={1100} height={300} priority />
+						<Image src="/images/sale3.png" alt="J Shopping" width={1100} height={300} priority />
+						<Image src="/images/sale4.png" alt="J Shopping" width={1100} height={300} priority />
+						<Image src="/images/sale5.png" alt="J Shopping" width={1100} height={300} priority />
+					</Carousel>
 					<Grid mt={2} container direction="row" justifyContent="space-between" alignItems="center">
 						{products.map(product => (
 							<ProductItem product={product} key={product.id} />
