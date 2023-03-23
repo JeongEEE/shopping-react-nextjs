@@ -9,11 +9,12 @@ import Checkbox from '@mui/material/Checkbox';
 import { useRecoilState } from 'recoil';
 import { userDataState, wishState, basketState } from '../../states/atoms'
 import { db } from '../../firebaseConfig'
-import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc, addDoc } from "firebase/firestore";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import { formatDateKor } from '../../lib/utils';
 
 const detailCss = css`
 	width: 100%;
@@ -52,7 +53,7 @@ const WishListPage = () => {
 					const item = v.data()
 					return { id: v.id, ...item }
 				});
-				console.log(wishList);
+				console.log('wishList', wishList);
 				setWishData(wishList)
 				setLocalWishData(wishList)
 			}).catch(err => { })
@@ -141,6 +142,40 @@ const WishListPage = () => {
 		}).catch(err => { })
 	}
 
+	const checkAlreadyInBasket = (product) => {
+		if(localBasket.length == 0) return false;
+
+		const find = localBasket.findIndex((el, index, arr) => el.title === product.title);
+		if(find == -1) return false;
+		else return true;
+	}
+	const addProductInBasket = async (product) => {
+		if(checkAlreadyInBasket(product)) {
+			enqueueSnackbar('이미 장바구니에 있는 상품입니다', { variant: 'info', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
+		const params = {
+			...product,
+			createdTime: formatDateKor(new Date()),
+			timeMillisecond: Date.now()
+		}
+		await addDoc(collection(db, userData.email, 'userData/basket'), params)
+		.then((docRef) => {
+			enqueueSnackbar('장바구니에 등록 완료', { variant: 'success', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			try {
+				let origin = JSON.parse(JSON.stringify(localBasket));
+				origin.push({ id: docRef.id, ...params });
+				setLocalBasket(origin);
+			} catch(err) {
+				console.log(err);
+			}
+		}).catch(err => {
+			console.log(err);
+		})
+	}
+
 	useEffect(() => {
 		if(userData.email == undefined) setAuth(false);
 		else setAuth(true);
@@ -200,7 +235,8 @@ const WishListPage = () => {
 								<Grid item container xs={2} p={2} justifyContent="center">
 									<Button variant="contained" css={css`${whiteBtn};height:2rem;`}
 										onClick={() => deletePopup('single', product.id, index)}>삭제</Button>
-									<Button variant="contained" css={css`height:2rem;`}>장바구니에 담기</Button>
+									<Button variant="contained" css={css`height:2rem;`}
+										onClick={() => addProductInBasket(product)}>장바구니에 담기</Button>
 								</Grid>
 							</Grid>
 						))}
