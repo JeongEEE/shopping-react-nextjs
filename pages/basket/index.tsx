@@ -194,7 +194,7 @@ const Basket = () => {
 	}, [])
 	
 	return (
-		<Grid container direction="row">
+		<Grid container direction="row" pt={1}>
 			<ShoppingCartOutlinedIcon fontSize="large" />
 			<Typography pl={1} variant="h4">장바구니</Typography>
 			<Grid container css={css`border-bottom:1px solid black;`}></Grid>
@@ -228,7 +228,7 @@ const Basket = () => {
 									</Grid>
 								</Grid>
 								<Grid item container xs={2} p={2} justifyContent="end">
-									<Button variant="contained" css={css`height:2rem;`}
+									<Button variant="contained" css={css`height:2rem;width:100%;`}
 										onClick={() => deletePopup('single', product.id, index)}>삭제</Button>
 								</Grid>
 							</Grid>

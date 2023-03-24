@@ -19,6 +19,7 @@ import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import MenuIcon from '@mui/icons-material/Menu';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
 const userBtn = css`
 	color: black;
@@ -80,12 +81,21 @@ function MainNavigation() {
 	const handleClose2 = () => {
     setAnchorEl2(null);
   };
+	const goCategorySearch = (category) => {
+		setAnchorEl(null);
+		router.push(`/search/${category}`);
+	}
   const goWishList = () => {
     setAnchorEl(null);
 		router.push('/basket/wish-list');
   };
 	const goMyInfo = () => {
     setAnchorEl(null);
+		if(!userData.email) {
+			enqueueSnackbar('로그인 후 이용해주세요', { variant: 'info', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
 		router.push('/my-info');
   };
 
@@ -184,6 +194,7 @@ function MainNavigation() {
 			setAccess(false)
 			setUserData({});
 			setBasketData([]);
+			router.replace('/');
 		}).catch((error) => {
 			console.log(error);
 		});
@@ -206,7 +217,7 @@ function MainNavigation() {
 					MenuListProps={{'aria-labelledby': 'basic-button', onMouseLeave: handleClose2}} 
 					disableScrollLock={true}>
 					{categories.map(item => (
-						<MenuItem key={item}>{item}</MenuItem>
+						<MenuItem key={item} onClick={() => goCategorySearch(item)}>{item}</MenuItem>
 					))}
 				</Menu>
 				<Link href="/">
@@ -258,6 +269,7 @@ function MainNavigation() {
 					</li>
         </ul>
       </nav>
+			<SnackbarProvider preventDuplicate />
     </header>
   )
 }

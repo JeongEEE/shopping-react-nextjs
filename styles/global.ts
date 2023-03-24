@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 
-const global = css`
-
+export const whiteBtn = css`
+	background-color: white;
+	color: black;
 `
-
-export default global;

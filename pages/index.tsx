@@ -8,9 +8,10 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import networkController from './api/networkController'
 import ProductItem from '../components/productItem';
+import TopButton from '../components/topButton';
 import { db } from '../firebaseConfig'
 import { useRecoilState } from 'recoil';
-import { wishState } from '../states/atoms';
+import { userDataState, wishState } from '../states/atoms';
 import Carousel from 'react-material-ui-carousel'
 
 export async function getStaticProps() {
@@ -34,6 +35,7 @@ export default function Home({ productData }) {
 	const router = useRouter();
 	const [products, setProducts] = useState([]);
 	const [wishData, setWishData] = useRecoilState(wishState);
+	const [userData, setUserData] = useRecoilState(userDataState);
 
 	function goWhiteTest() {
 		router.push("/white-test")
@@ -41,7 +43,7 @@ export default function Home({ productData }) {
 
 	useEffect(() => {
 		console.log('컴포넌트가 화면에 나타남');
-		if(wishData.length != 0) {
+		if(wishData.length != 0 && userData.email) {
 			let newArray = JSON.parse(JSON.stringify(productData));
 			newArray.forEach((product, idx) => {
 				const find = wishData.findIndex((el, index, arr) => el.title === product.title);
@@ -81,6 +83,7 @@ export default function Home({ productData }) {
 					</Grid>
 				</Grid>
 			</Grid>
+			<TopButton />
 		</Box>
   )
 }

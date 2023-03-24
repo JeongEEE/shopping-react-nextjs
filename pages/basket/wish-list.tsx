@@ -202,7 +202,7 @@ const WishListPage = () => {
 	}, [])
 
 	return (
-		<Grid container direction="row">
+		<Grid container direction="row" pt={1}>
 			<FavoriteBorderOutlinedIcon fontSize="large" />
 			<Typography pl={1} variant="h4">찜 목록</Typography>
 			<Grid container css={css`border-bottom:1px solid black;`}></Grid>
@@ -232,10 +232,10 @@ const WishListPage = () => {
 										</Typography>
 									</Grid>
 								</Grid>
-								<Grid item container xs={2} p={2} justifyContent="center">
-									<Button variant="contained" css={css`${whiteBtn};height:2rem;`}
+								<Grid item container xs={2} p={2} justifyContent="center" alignItems="center">
+									<Button variant="contained" css={css`${whiteBtn};height:2rem;width:100%;`}
 										onClick={() => deletePopup('single', product.id, index)}>삭제</Button>
-									<Button variant="contained" css={css`height:2rem;`}
+									<Button variant="contained" css={css`height:2rem;width:100%;`}
 										onClick={() => addProductInBasket(product)}>장바구니에 담기</Button>
 								</Grid>
 							</Grid>
