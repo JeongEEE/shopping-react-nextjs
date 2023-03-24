@@ -5,8 +5,8 @@ import { useRouter } from 'next/router'
 import { auth } from '../../firebaseConfig'
 
 const mainContent = (props) => css`
-	max-width: ${props.wide === 0 ? '1100px' : '1300px'};
-	min-width: ${props.wide === 0 ? '1100px' : '1300px'};
+	max-width: ${props.wide ? '1300px' : '1100px'};
+	min-width: ${props.wide ? '1300px' : '1100px'};
 	/* max-width: 1100px;
 	min-width: 1100px; */
 	margin-left: auto;
@@ -17,7 +17,7 @@ const mainContent = (props) => css`
 const Layout = (props) => {
 	const router = useRouter()
 	const [noNav, setNoNav] = useState(false);
-	const [wide, setWide] = useState(0);
+	const [wide, setWide] = useState(false);
 
 	useEffect(() => {
 		// firebase 로그인 상태 변경을 감지
@@ -29,10 +29,10 @@ const Layout = (props) => {
       }
     });
 
-		if(router.asPath.includes('/search')) setWide(1);
+		if(router.asPath.includes('/search')) setWide(true);
 		router.events.on('routeChangeComplete', (url) => {
-			if(url.includes('/search')) setWide(1);
-			else setWide(0);
+			if(url.includes('/search')) setWide(true);
+			else setWide(false);
     })
 		return () => {
 			router.events.off('routeChangeComplete', () => { })
