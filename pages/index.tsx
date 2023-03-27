@@ -13,10 +13,11 @@ import { db } from '../firebaseConfig'
 import { useRecoilState } from 'recoil';
 import { userDataState, wishState } from '../states/atoms';
 import Carousel from 'react-material-ui-carousel'
+import Product from '../types/product'
 
 export async function getStaticProps() {
   try {
-		const data = await networkController.getAllProducts();
+		const data: Array<Product> = await networkController.getAllProducts();
 		data.forEach(item => {
 			item.wish = false;
 		})
@@ -33,8 +34,8 @@ export async function getStaticProps() {
 
 export default function Home({ productData }) {
 	const router = useRouter();
-	const [products, setProducts] = useState([]);
-	const [wishData, setWishData] = useRecoilState(wishState);
+	const [products, setProducts] = useState<Array<Product>>([]);
+	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
 	const [userData, setUserData] = useRecoilState(userDataState);
 
 	function goWhiteTest() {

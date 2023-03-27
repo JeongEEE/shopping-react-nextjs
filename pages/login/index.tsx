@@ -12,6 +12,7 @@ import { useRecoilState } from 'recoil';
 import { userDataState } from '../../states/atoms'
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../firebaseConfig'
+import User from '../../types/user'
 
 const loginWrap = css`
 	max-width: 500px;
@@ -32,11 +33,11 @@ const btn = css`
 `
 
 const Login = () => {
-	const [id, setId] = useState('');
-	const [pw, setPw] = useState('');
-	const [loading, setLoading] = useState(false);
+	const [id, setId] = useState<string>('');
+	const [pw, setPw] = useState<string>('');
+	const [loading, setLoading] = useState<boolean>(false);
 	const router = useRouter();
-	const [userData, setUserData] = useRecoilState(userDataState);
+	const [userData, setUserData] = useRecoilState<User>(userDataState);
 
 	const goSignUpPage = () => {
 		router.push("/login/signUp")

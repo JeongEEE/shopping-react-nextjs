@@ -20,6 +20,8 @@ import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
+import Product from '../../types/product'
+import User from '../../types/user'
 
 const userBtn = css`
 	color: black;
@@ -56,13 +58,13 @@ const categoryBtn = css`
 
 function MainNavigation() {
 	const router = useRouter();
-	const [userData, setUserData] = useRecoilState(userDataState);
-	const [wishData, setWishData] = useRecoilState(wishState);
-	const [basketData, setBasketData] = useRecoilState(basketState);
-	const [categories, setCategories] = useRecoilState(categoriesState);
-	const [access, setAccess] = useState(false);
-	const [email, setEmail] = useState('');
-	const [basketCount, setBasketCount] = useState(0);
+	const [userData, setUserData] = useRecoilState<User>(userDataState);
+	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
+	const [basketData, setBasketData] = useRecoilState<Array<Product>>(basketState);
+	const [categories, setCategories] = useRecoilState<Array<string>>(categoriesState);
+	const [access, setAccess] = useState<boolean>(false);
+	const [email, setEmail] = useState<string>('');
+	const [basketCount, setBasketCount] = useState<number>(0);
 	const [mounted, setMounted] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
@@ -81,7 +83,7 @@ function MainNavigation() {
 	const handleClose2 = () => {
     setAnchorEl2(null);
   };
-	const goCategorySearch = (category) => {
+	const goCategorySearch = (category: string) => {
 		setAnchorEl(null);
 		router.push(`/search/${category}`);
 	}

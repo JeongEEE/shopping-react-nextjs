@@ -14,6 +14,7 @@ import { formatDateKor } from '../../lib/utils';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import Product from '../../types/product'
 
 const textdiv = css`
 	height: 2rem;
@@ -47,11 +48,11 @@ export async function getServerSideProps({ query: { id } }) {
 
 const ProductDetail = ({ id }) => {
 	const router = useRouter();
-	const [product, setProduct] = useState([]);
+	const [product, setProduct] = useState<Product>([]);
 	const [productCount, setProductCount] = useState('1');
 	const [userData, setUserData] = useRecoilState(userDataState);
-	const [wishData, setWishData] = useRecoilState(wishState);
-	const [basketData, setBasketData] = useRecoilState(basketState);
+	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
+	const [basketData, setBasketData] = useRecoilState<Array<Product>>(basketState);
 
 	const inputOnChange = (e) => {
 		const value = Number(e.target.value);
