@@ -38,10 +38,6 @@ export default function Home({ productData }) {
 	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
 	const [userData, setUserData] = useRecoilState(userDataState);
 
-	function goWhiteTest() {
-		router.push("/white-test")
-	}
-
 	useEffect(() => {
 		console.log('컴포넌트가 화면에 나타남');
 		if(wishData.length != 0 && userData.email) {

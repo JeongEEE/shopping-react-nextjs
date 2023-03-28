@@ -84,7 +84,7 @@ function MainNavigation() {
     setAnchorEl2(null);
   };
 	const goCategorySearch = (category: string) => {
-		setAnchorEl(null);
+		setAnchorEl2(null);
 		router.push(`/search/${category}`);
 	}
   const goWishList = () => {
@@ -196,7 +196,8 @@ function MainNavigation() {
 			setAccess(false)
 			setUserData({});
 			setBasketData([]);
-			router.replace('/');
+			if(router.asPath == '/') location.reload();
+			else router.replace('/');
 		}).catch((error) => {
 			console.log(error);
 		});
@@ -216,8 +217,8 @@ function MainNavigation() {
 					</Grid>
 				</Button>
 				<Menu anchorEl={anchorEl2} open={open2} onClose={handleClose2}
-					MenuListProps={{'aria-labelledby': 'basic-button', onMouseLeave: handleClose2}} 
-					disableScrollLock={true}>
+					MenuListProps={{'aria-labelledby': 'basic-button'}} 
+					disableScrollLock={true} onMouseLeave={handleClose2}>
 					{categories.map(item => (
 						<MenuItem key={item} onClick={() => goCategorySearch(item)}>{item}</MenuItem>
 					))}
@@ -263,8 +264,8 @@ function MainNavigation() {
 							마이페이지
 						</Button>
 						<Menu anchorEl={anchorEl} open={open} onClose={handleClose}
-							MenuListProps={{'aria-labelledby': 'basic-button', onMouseLeave: handleClose}} 
-							disableScrollLock={true}>
+							MenuListProps={{'aria-labelledby': 'basic-button'}} 
+							disableScrollLock={true} onMouseLeave={handleClose}>
 							<MenuItem onClick={goWishList}>찜 목록</MenuItem>
 							<MenuItem onClick={goMyInfo}>내정보</MenuItem>
 						</Menu>
