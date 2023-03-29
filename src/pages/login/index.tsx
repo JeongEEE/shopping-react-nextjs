@@ -6,13 +6,13 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { css, jsx } from '@emotion/react'
 import { useRouter } from "next/router";
-import networkController from '../api/networkController'
+import networkController from 'src/api/networkController'
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useRecoilState } from 'recoil';
-import { userDataState } from '../../states/atoms'
+import { userDataState } from 'src/states/atoms'
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../../firebaseConfig'
-import User from '../../types/user'
+import { auth } from '../../../firebaseConfig'
+import { User } from 'src/types/user'
 
 const loginWrap = css`
 	max-width: 500px;

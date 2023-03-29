@@ -1,5 +1,5 @@
 import Axios, { AxiosRequestConfig } from "axios";
-import Product from '../../types/product'
+import { Product } from 'src/types/product'
 
 export default {
 	async getAllProducts(): Promise<Array<Product>> {
@@ -7,7 +7,7 @@ export default {
 		const response = await Axios({ url, method: 'GET' });
     return Promise.resolve(response.data);
 	},
-	async getProductData(id): Promise<Array<Product>> {
+	async getProductData(id: string): Promise<Array<Product>> {
 		const url = `https://fakestoreapi.com/products/${id}`;
 		const response = await Axios({ url, method: 'GET' });
     return Promise.resolve(response.data);

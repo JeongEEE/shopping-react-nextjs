@@ -6,14 +6,14 @@ import { useRouter } from "next/router";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import networkController from './api/networkController'
-import ProductItem from '../components/productItem';
-import TopButton from '../components/topButton';
-import { db } from '../firebaseConfig'
+import networkController from 'src/api/networkController'
+import ProductItem from 'src/components/productItem';
+import TopButton from 'src/components/topButton';
+import { db } from '../../firebaseConfig'
 import { useRecoilState } from 'recoil';
-import { userDataState, wishState } from '../states/atoms';
+import { userDataState, wishState } from 'src/states/atoms';
 import Carousel from 'react-material-ui-carousel'
-import Product from '../types/product'
+import { Product } from 'src/types/product'
 
 export async function getStaticProps() {
   try {

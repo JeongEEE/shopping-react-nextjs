@@ -8,12 +8,13 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import Divider from '@mui/material/Divider';
 import Checkbox from '@mui/material/Checkbox';
 import { useRecoilState } from 'recoil';
-import { userDataState, basketState } from '../../states/atoms'
-import { db } from '../../firebaseConfig'
+import { userDataState, basketState, purchaseState } from 'src/states/atoms'
+import { db } from '../../../firebaseConfig'
 import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { useRouter } from "next/router";
 
 const detailCss = css`
 	width: 100%;
@@ -33,8 +34,10 @@ const input = css`
 `
 
 const Basket = () => {
+	const router = useRouter();
 	const [userData, setUserData] = useRecoilState(userDataState);
 	const [localBasket, setLocalBasket] = useRecoilState(basketState);
+	const [purchaseList, setPurchaseList] = useRecoilState(purchaseState);
 	const [auth, setAuth] = useState(false);
 	const [basket, setBasket] = useState([]);
 	const [totalPrice, setTotalPrice] = useState(0);
@@ -165,6 +168,21 @@ const Basket = () => {
 		}).catch(err => { })
 	}
 
+	const goPurchase = () => {
+		let makeList = [];
+		basket.forEach((product, index) => {
+			if(product.checked) makeList.push(product);
+		})
+		if(makeList.length != 0) {
+			setPurchaseList(makeList);
+			router.push('/purchase');
+		} else {
+			enqueueSnackbar('선택한 상품이 없습니다', 
+				{ variant: 'info', autoHideDuration: 2000,
+					anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+		}
+	}
+
 	useEffect(() => {
 		if(userData.email == undefined) setAuth(false);
 		else setAuth(true);
@@ -239,7 +257,8 @@ const Basket = () => {
 								<Typography variant="h6">합계 : {totalPrice}$</Typography>
 							</Grid>
 							<Grid item container xs={2} p={2}>
-								<Button variant="contained" css={css`width:100%;height:2.5rem;`}>구매하기</Button>
+								<Button variant="contained" css={css`width:100%;height:2.5rem;`}
+									onClick={goPurchase}>구매하기</Button>
 							</Grid>
 						</Grid>
 					</Grid>

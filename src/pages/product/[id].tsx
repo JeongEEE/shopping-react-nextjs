@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import networkController from '../api/networkController'
+import networkController from 'src/api/networkController'
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { css, jsx } from '@emotion/react'
-import { db } from '../../firebaseConfig'
+import { db } from '../../../firebaseConfig'
 import { collection, addDoc } from "firebase/firestore";
 import { useRecoilState } from 'recoil';
-import { userDataState, wishState, basketState } from '../../states/atoms';
-import { formatDateKor } from '../../lib/utils';
+import { userDataState, wishState, basketState, purchaseState } from 'src/states/atoms';
+import { formatDateKor } from 'src/lib/utils';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import Product from '../../types/product'
+import { Product } from 'src/types/product'
 
 const textdiv = css`
 	height: 2rem;
@@ -37,14 +37,14 @@ const input = css`
 	padding: 5px;
 `
 
-export async function getServerSideProps({ query: { id } }) {
-	// 새로고침할때 쿼리값이 날라가는걸 방지하기위해 서버사이드로 쿼리를 받아옴
-  return {
-    props: {
-      id,
-    },
-  };
-}
+// export async function getServerSideProps({ query: { id } }) {
+// 	// 새로고침할때 쿼리값이 날라가는걸 방지하기위해 서버사이드로 쿼리를 받아옴
+//   return {
+//     props: {
+//       id,
+//     },
+//   };
+// }
 
 const ProductDetail = ({ id }) => {
 	const router = useRouter();
@@ -53,6 +53,7 @@ const ProductDetail = ({ id }) => {
 	const [userData, setUserData] = useRecoilState(userDataState);
 	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
 	const [basketData, setBasketData] = useRecoilState<Array<Product>>(basketState);
+	const [purchaseList, setPurchaseList] = useRecoilState<Array<Product>>(purchaseState);
 
 	const inputOnChange = (e) => {
 		const value = Number(e.target.value);
@@ -157,6 +158,11 @@ const ProductDetail = ({ id }) => {
 		})
 	}
 
+	const goPurchase = () => {
+		setPurchaseList([product]);
+		router.push('/purchase');
+	}
+
 	useEffect(() => {
 		networkController.getProductData(id).then((data) => {
 			console.log(data);
@@ -200,7 +206,8 @@ const ProductDetail = ({ id }) => {
 									장바구니에 담기</Button>
 							</Grid>
 							<Grid item container xs={3} p={1}>
-								<Button variant="contained" css={btn}>구매하기</Button>
+								<Button variant="contained" css={btn}
+									onClick={goPurchase}>구매하기</Button>
 							</Grid>
 						</Grid>
 					</Grid>
@@ -209,6 +216,12 @@ const ProductDetail = ({ id }) => {
 			<SnackbarProvider preventDuplicate />
 		</Box>
 	)
+}
+
+ProductDetail.getInitialProps = async ({ query }) => {
+  const { id } = query
+
+  return { id }
 }
 
 export default ProductDetail

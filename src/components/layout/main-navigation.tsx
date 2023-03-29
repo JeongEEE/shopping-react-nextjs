@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import classes from './main-navigation.module.css'
-import networkController from '../../pages/api/networkController'
+import networkController from 'src/api/networkController'
 import Logo from './logo'
 import { useRouter } from "next/router";
 import { useRecoilState } from 'recoil';
-import { userDataState, wishState, basketState, categoriesState } from '../../states/atoms';
+import { userDataState, wishState, basketState, categoriesState } from 'src/states/atoms';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { auth } from '../../firebaseConfig'
+import { auth } from '../../../firebaseConfig'
 import { signOut } from "firebase/auth";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { css, jsx } from '@emotion/react'
-import { db } from '../../firebaseConfig'
+import { db } from '../../../firebaseConfig'
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
-import Product from '../../types/product'
-import User from '../../types/user'
+import { Product } from 'src/types/product'
+import { User } from 'src/types/user'
 
 const userBtn = css`
 	color: black;
@@ -49,7 +49,6 @@ const categoryBtn = css`
 	width: 100px;
 	border-radius: 0px;
 	color: white;
-	margin-right: 25px;
 	&:hover {
 		background-color: #415df9;
 		color: white;
@@ -206,7 +205,7 @@ function MainNavigation() {
   return (
     <header className={classes.header}>
 			<Grid container direction="row" justifyContent="left" alignItems="center"
-				css={css`width:300px;height:100%;`}>
+				css={css`width:400px;height:100%;`}>
 				<Button css={categoryBtn}
 					aria-controls={open2 ? 'basic-menu' : undefined}
 					aria-haspopup="true" aria-expanded={open2 ? 'true' : undefined}
@@ -266,6 +265,7 @@ function MainNavigation() {
 						<Menu anchorEl={anchorEl} open={open} onClose={handleClose}
 							MenuListProps={{'aria-labelledby': 'basic-button'}} 
 							disableScrollLock={true} onMouseLeave={handleClose}>
+							<MenuItem>주문목록</MenuItem>
 							<MenuItem onClick={goWishList}>찜 목록</MenuItem>
 							<MenuItem onClick={goMyInfo}>내정보</MenuItem>
 						</Menu>

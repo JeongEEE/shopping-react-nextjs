@@ -7,14 +7,14 @@ import { css, jsx } from '@emotion/react'
 import Divider from '@mui/material/Divider';
 import Checkbox from '@mui/material/Checkbox';
 import { useRecoilState } from 'recoil';
-import { userDataState, wishState, basketState } from '../../states/atoms'
-import { db } from '../../firebaseConfig'
+import { userDataState, wishState, basketState } from 'src/states/atoms'
+import { db } from '../../../firebaseConfig'
 import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc, addDoc } from "firebase/firestore";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import { formatDateKor } from '../../lib/utils';
+import { formatDateKor } from 'src/lib/utils';
 
 const detailCss = css`
 	width: 100%;

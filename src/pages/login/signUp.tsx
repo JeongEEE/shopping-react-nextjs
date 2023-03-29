@@ -6,11 +6,12 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { css, jsx } from '@emotion/react'
 import { useRouter } from "next/router";
-import networkController from '../api/networkController'
+import networkController from 'src/api/networkController'
 import LoadingButton from '@mui/lab/LoadingButton';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../../firebaseConfig'
+import { auth } from '../../../firebaseConfig'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
+import { validateEmail } from 'src/lib/utils'
 
 const loginWrap = css`
 	max-width: 500px;
@@ -43,6 +44,18 @@ const SignUp = () => {
 	}
 
 	const requestSignUp = async () => {
+		if(!validateEmail(id)) {
+			enqueueSnackbar('이메일 형식이 아닙니다', 
+					{ variant: 'warning', autoHideDuration: 2000,
+						anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
+		if(pw.length < 5) {
+			enqueueSnackbar('비밀번호가 너무 짧아요', 
+					{ variant: 'warning', autoHideDuration: 2000,
+						anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
 		setLoading(true);
 		createUserWithEmailAndPassword(auth, id, pw)
 		.then((userCredential) => {

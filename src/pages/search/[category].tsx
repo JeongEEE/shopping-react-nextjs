@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import Product from '../../types/product'
+import { Product } from 'src/types/product'
 import { useRecoilState } from 'recoil';
-import { userDataState, wishState } from '../../states/atoms';
-import networkController from '../api/networkController'
-import ProductItem from '../../components/productItem';
+import { userDataState, wishState } from 'src/states/atoms';
+import networkController from 'src/api/networkController'
+import ProductItem from 'src/components/productItem';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { css } from '@emotion/react'
 import CheckIcon from '@mui/icons-material/Check';
-import { blackTextBtn } from '../../styles/global'
+import { blackTextBtn } from 'src/styles/global'
 
-export async function getServerSideProps({ query: { category } }) {
-	// 새로고침할때 쿼리값이 날라가는걸 방지하기위해 서버사이드로 쿼리를 받아옴
-  return {
-    props: {
-      category,
-    },
-  };
-}
+// export async function getServerSideProps({ query: { category } }) {
+// 	// 새로고침할때 쿼리값이 날라가는걸 방지하기위해 서버사이드로 쿼리를 받아옴
+// 	return {
+// 		props: {
+// 			category,
+// 		}
+// 	}
+// }
 
 const SearchPage = ({ category }) => {
 	const [products, setProducts] = useState<Array<Product>>([]);
@@ -71,7 +71,7 @@ const SearchPage = ({ category }) => {
 	return (
 		<Box>
 			<Grid container mb={5}>
-				<Typography variant="h6" mt={2}>'{category}'에 대한 검색결과</Typography>
+				<Typography variant="h6" mt={2}>&quot;{category}&quot;에 대한 검색결과</Typography>
 				<Grid mt={1} pl={2} container direction="row" justifyContent="start" alignItems="center"
 					css={css`background-color:#eeeeee;border-radius:7px;`}>
 					<Button variant="text" onClick={() => clickSort(1)} css={blackTextBtn}>
@@ -89,6 +89,12 @@ const SearchPage = ({ category }) => {
 			</Grid>
 		</Box>
 	)
+}
+
+SearchPage.getInitialProps = async ({ query }) => {
+  const { category } = query
+
+  return { category }
 }
 
 export default SearchPage

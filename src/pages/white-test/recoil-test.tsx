@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { sample, sampleSelector } from '../../states/atoms';
+import { sample, sampleSelector } from 'src/states/atoms';
 
 const RecoilTestPage = () => {
 	const [aValue, setaValue] = useState('');

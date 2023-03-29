@@ -10,7 +10,8 @@ React 18 , Next.js, Typescript, Recoil, Material UI, Emotion, Firebase
 - 찜 리스트
 - 카테고리 검색
 - 마이페이지
-- 결제페이지
+- 결제페이지(실제 결제x)
+- 주문목록
 
 ----
 ## Getting Started

@@ -2,9 +2,13 @@ import React, { Fragment, useState, useEffect } from 'react'
 import MainNavigation from './main-navigation'
 import { css, jsx } from '@emotion/react'
 import { useRouter } from 'next/router'
-import { auth } from '../../firebaseConfig'
+import { auth } from '../../../firebaseConfig'
 
-const mainContent = (props) => css`
+type mainContentTypeProps = {
+	wide: boolean;
+};
+
+const mainContent = (props: mainContentTypeProps) => css`
 	max-width: ${props.wide ? '1300px' : '1100px'};
 	min-width: ${props.wide ? '1300px' : '1100px'};
 	/* max-width: 1100px;
@@ -14,7 +18,7 @@ const mainContent = (props) => css`
 	min-height: 100vh;
 `
 
-const Layout = (props) => {
+const Layout = (props: any) => {
 	const router = useRouter()
 	const [noNav, setNoNav] = useState(false);
 	const [wide, setWide] = useState(false);

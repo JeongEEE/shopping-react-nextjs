@@ -3,9 +3,25 @@ import React from 'react'
 import Button from "@mui/material/Button";
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import { makeStyles } from '@mui/styles';
-import { MuiStyles } from './mui-test-css'
 
-const useStyles = makeStyles(MuiStyles)
+const useStyles = makeStyles({
+	button1: {
+		background: 'orange',
+		color: 'white',
+		'&:hover': {
+			background: 'white',
+			color: 'black'
+		}
+	},
+	button2: {
+		background: 'yellow',
+		color: 'black',
+		'&:hover': {
+			background: 'white',
+			color: 'black'
+		}
+	}
+})
 
 const MuiTest = () => {
 	const classes = useStyles();

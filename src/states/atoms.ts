@@ -32,6 +32,12 @@ export const categoriesState = atom({
 	effects_UNSTABLE: [persistAtom],
 });
 
+export const purchaseState = atom({
+  key: 'purchaseState',
+	default: [],
+	effects_UNSTABLE: [persistAtom],
+});
+
 // ########################################## sample
 export const sample = atom({
   key: 'sample',

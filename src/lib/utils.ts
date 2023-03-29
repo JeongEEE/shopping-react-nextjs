@@ -26,3 +26,8 @@ export function fromSecondToHHMMSS(secondValue) {
 	if (seconds >= 10) { secondsStr = seconds; }
 	return hoursStr + ':' + minutesStr + ':' + secondsStr.toString().substr(0,2);
 }
+
+export function validateEmail(email) {
+	let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+	return regex.test(String(email).toLowerCase());
+}
