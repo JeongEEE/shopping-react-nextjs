@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { css, jsx } from '@emotion/react'
-import { db } from '../../../firebaseConfig'
+import { db } from 'src/firebaseConfig'
 import { collection, addDoc } from "firebase/firestore";
 import { useRecoilState } from 'recoil';
 import { userDataState, wishState, basketState, purchaseState } from 'src/states/atoms';
@@ -94,7 +94,7 @@ const ProductDetail = ({ id }) => {
 			image: product.image,
 			price: product.price,
 			title: product.title,
-			discription: product.description,
+			description: product.description,
 			count: productCount,
 			checked: true,
 			createdTime: formatDateKor(new Date()),
@@ -136,7 +136,7 @@ const ProductDetail = ({ id }) => {
 			image: product.image,
 			price: product.price,
 			title: product.title,
-			discription: product.description,
+			description: product.description,
 			count: productCount,
 			checked: true,
 			createdTime: formatDateKor(new Date()),

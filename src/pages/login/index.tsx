@@ -11,7 +11,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useRecoilState } from 'recoil';
 import { userDataState } from 'src/states/atoms'
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../../../firebaseConfig'
+import { auth } from 'src/firebaseConfig'
 import { User } from 'src/types/user'
 
 const loginWrap = css`

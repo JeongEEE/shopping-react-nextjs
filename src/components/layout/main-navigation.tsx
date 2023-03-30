@@ -10,11 +10,11 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { auth } from '../../../firebaseConfig'
+import { auth } from 'src/firebaseConfig'
 import { signOut } from "firebase/auth";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { css, jsx } from '@emotion/react'
-import { db } from '../../../firebaseConfig'
+import { db } from 'src/firebaseConfig'
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';

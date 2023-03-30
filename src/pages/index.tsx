@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import networkController from 'src/api/networkController'
 import ProductItem from 'src/components/productItem';
 import TopButton from 'src/components/topButton';
-import { db } from '../../firebaseConfig'
+import { db } from 'src/firebaseConfig'
 import { useRecoilState } from 'recoil';
 import { userDataState, wishState } from 'src/states/atoms';
 import Carousel from 'react-material-ui-carousel'

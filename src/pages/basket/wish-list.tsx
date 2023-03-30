@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider';
 import Checkbox from '@mui/material/Checkbox';
 import { useRecoilState } from 'recoil';
 import { userDataState, wishState, basketState } from 'src/states/atoms'
-import { db } from '../../../firebaseConfig'
+import { db } from 'src/firebaseConfig'
 import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc, addDoc } from "firebase/firestore";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
@@ -156,7 +156,14 @@ const WishListPage = () => {
 			return;
 		}
 		const params = {
-			...product,
+			email: userData.email,
+			category: product.category,
+			image: product.image,
+			price: product.price,
+			title: product.title,
+			description: product.description,
+			count: product.count,
+			checked: true,
 			createdTime: formatDateKor(new Date()),
 			timeMillisecond: Date.now()
 		}

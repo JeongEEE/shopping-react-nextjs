@@ -3,7 +3,7 @@ export interface Product {
 	category: string;
 	checked: boolean;
 	createdTime: string;
-	discription: string;
+	description: string;
 	email: string;
 	image: string;
 	timeMillisecond: number;

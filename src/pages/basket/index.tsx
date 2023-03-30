@@ -9,7 +9,7 @@ import Divider from '@mui/material/Divider';
 import Checkbox from '@mui/material/Checkbox';
 import { useRecoilState } from 'recoil';
 import { userDataState, basketState, purchaseState } from 'src/states/atoms'
-import { db } from '../../../firebaseConfig'
+import { db } from 'src/firebaseConfig'
 import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert

@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import networkController from 'src/api/networkController'
 import LoadingButton from '@mui/lab/LoadingButton';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../../../firebaseConfig'
+import { auth } from 'src/firebaseConfig'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { validateEmail } from 'src/lib/utils'
 
