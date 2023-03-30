@@ -22,6 +22,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { Product } from 'src/types/product'
 import { User } from 'src/types/user'
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const userBtn = css`
 	color: black;
@@ -67,6 +68,7 @@ function MainNavigation() {
 	const [mounted, setMounted] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
+	const isMobile = useMediaQuery("(max-width: 600px)");
 
   const open = Boolean(anchorEl);
   const menuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -99,6 +101,10 @@ function MainNavigation() {
 		}
 		router.push('/my-info');
   };
+	const goAdmin = () => {
+		setAnchorEl(null);
+		router.push('/admin');
+	}
 
 	const fetchCategories = async () => {
 		try {
@@ -268,6 +274,8 @@ function MainNavigation() {
 							<MenuItem>주문목록</MenuItem>
 							<MenuItem onClick={goWishList}>찜 목록</MenuItem>
 							<MenuItem onClick={goMyInfo}>내정보</MenuItem>
+							{userData.email == 'test@test.com' && mounted
+								? <MenuItem onClick={goAdmin}>관리자메뉴</MenuItem> : null }
 						</Menu>
 					</li>
         </ul>

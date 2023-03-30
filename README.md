@@ -3,6 +3,9 @@ Node v.18.13.0
 React 18 , Next.js, Typescript, Recoil, Material UI, Emotion, Firebase
 
 ----
+https://shopping-react-ece42.firebaseapp.com
+
+----
 ## 주요기능
 - Firebase 로그인, 회원가입
 - Fake Store API 상품 표시

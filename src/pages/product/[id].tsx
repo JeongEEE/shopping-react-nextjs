@@ -159,6 +159,11 @@ const ProductDetail = ({ id }) => {
 	}
 
 	const goPurchase = () => {
+		if(userData.email == undefined) {
+			enqueueSnackbar('로그인하고 이용해주세요', { variant: 'info', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
 		setPurchaseList([product]);
 		router.push('/purchase');
 	}
