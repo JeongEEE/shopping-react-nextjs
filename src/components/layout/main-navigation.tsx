@@ -242,10 +242,6 @@ function MainNavigation() {
 					}
 				</ul>
         <ul>
-					{userData.email == 'test@test.com' && mounted
-						?	<li><Link href="/white-test">WhiteTest</Link></li>
-						: <li></li>
-					}
           <li css={basketList}>
 						<Link href="/basket">장바구니</Link>
 						{basketCount >= 10 
