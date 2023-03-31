@@ -70,6 +70,7 @@ const AddProductDialog = ({ visible, visibleFunc }) => {
 					<TextField margin="dense" type="number" onChange={priceChange}
             label="가격" fullWidth variant="standard" />
 					<textarea onChange={handleDes} id="description" name="description"
+						placeholder="상품 설명"
             rows={6} cols={63} css={css`padding:10px; margin-top:10px;margin-bottom:10px;`}>
           </textarea>
 					<input accept="image/*" type="file" onChange={e => onUpload(e)} />

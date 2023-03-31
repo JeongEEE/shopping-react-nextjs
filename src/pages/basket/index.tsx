@@ -212,7 +212,7 @@ const Basket = () => {
 	}, [])
 	
 	return (
-		<Grid container direction="row" pt={1}>
+		<Grid container direction="row" pt={1} mb={4}>
 			<ShoppingCartOutlinedIcon fontSize="large" />
 			<Typography pl={1} variant="h4">장바구니</Typography>
 			<Grid container css={css`border-bottom:1px solid black;`}></Grid>

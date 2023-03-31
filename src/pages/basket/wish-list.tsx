@@ -209,7 +209,7 @@ const WishListPage = () => {
 	}, [])
 
 	return (
-		<Grid container direction="row" pt={1}>
+		<Grid container direction="row" pt={1} mb={4}>
 			<FavoriteBorderOutlinedIcon fontSize="large" />
 			<Typography pl={1} variant="h4">찜 목록</Typography>
 			<Grid container css={css`border-bottom:1px solid black;`}></Grid>
