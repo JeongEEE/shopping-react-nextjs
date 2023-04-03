@@ -73,7 +73,6 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 
 	const fileImageUpload = () => {
 		if(fileName === '') return;
-		if(fileName === originProduct.fileName) return;
 		return new Promise<string>(async (resolve) => { 
 			await uploadBytes(ref(storage, `productImage/${fileName}`), file)
 			.then((snapshot) => {
@@ -85,11 +84,26 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 		});
 	}
 
+	const modifyProductImage = () => {
+		if(fileName === originProduct.fileName) return originProduct.image;
+		return new Promise<string>(async (resolve) => { 
+			await deleteObject(ref(storage, `productImage/${originProduct.fileName}`))
+				.then((snapshot) => { }).catch((error) => { });
+			await uploadBytes(ref(storage, `productImage/${fileName}`), file)
+				.then((snapshot) => {
+				}).catch((error) => { });
+			await getDownloadURL(ref(storage, `productImage/${fileName}`))
+				.then((snapshot) => {
+					resolve(snapshot);
+				}).catch((error) => { });
+		});
+	}
+
 	const editProduct = async () => {
-		if(title == '' || category == '' || price == 0 || description == '') return;
+		if(title == '' || category == '' || price == 0 || description == '' || fileName === '') return;
 		setLoading(true);
-		let imageUrl = await fileImageUpload();
 		if(editType === 'add') {
+			let imageUrl = await fileImageUpload();
 			await addDoc(collection(db, 'products'), {
 				title: title,
 				category: category,
@@ -109,12 +123,13 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 				console.log(error);
 			});	
 		} else { // modify
+			let imageUrl = await modifyProductImage();
 			await updateDoc(doc(db, 'products', originProduct.id), {
 				title: title,
 				category: category,
 				price: price,
 				description: description,
-				image: fileName === originProduct.fileName ? originProduct.image : imageUrl,
+				image: imageUrl,
 				fileName: fileName,
 				wish: originProduct.wish,
 				createdTime: originProduct.createdTime,
