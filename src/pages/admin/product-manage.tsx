@@ -28,8 +28,10 @@ const ProductManage = () => {
 	const visibleFunc = (visible) => {
 		setDialogOpen(visible);
 	}
-	const successFunc = () => {
-		enqueueSnackbar('추가 성공', { variant: 'success', autoHideDuration: 2000,
+	const successFunc = (successValue) => {
+		const str = successValue === 'add' ? '추가 성공' : '수정 성공';
+		enqueueSnackbar(str, 
+			{ variant: 'success', autoHideDuration: 2000,
 			anchorOrigin: { vertical: 'top', horizontal: 'center' }})
 		fetchProductData();
 	}

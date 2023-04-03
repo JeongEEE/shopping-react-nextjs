@@ -116,7 +116,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 				timeMillisecond: Date.now()
 			}).then((docRef) => {
 				setLoading(false);
-				successFunc(true);
+				successFunc(editType);
 				handleClose();
 			}).catch((error) => {
 				setLoading(false);
@@ -136,7 +136,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 				timeMillisecond: originProduct.timeMillisecond
 			}).then((docRef) => {
 				setLoading(false);
-				successFunc(true);
+				successFunc(editType);
 				handleClose();
 			}).catch((error) => {
 				setLoading(false);
