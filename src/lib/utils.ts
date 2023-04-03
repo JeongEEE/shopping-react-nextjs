@@ -31,3 +31,7 @@ export function validateEmail(email) {
 	let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
 	return regex.test(String(email).toLowerCase());
 }
+
+export function priceFormat(price) {
+	return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

@@ -12,12 +12,17 @@ import { ref, deleteObject } from "firebase/storage";
 import AddProductDialog from 'src/components/addProductDialog';
 import { whiteBtn } from 'src/styles/global';
 import { confirmAlert } from 'react-confirm-alert';
+import { priceFormat } from 'src/lib/utils';
 
 const ProductManage = () => {
 	const [dialogOpen, setDialogOpen] = useState(false);
+	const [editType, setEditType] = useState('add');
+	const [originProduct, setOriginProduct] = useState(undefined);
 	const [products, setProducts] = useState([]);
 
-	const openForm = () => {
+	const openForm = (edit, product) => {
+		setEditType(edit);
+		setOriginProduct(product);
 		setDialogOpen(true);
 	}
 	const visibleFunc = (visible) => {
@@ -87,8 +92,8 @@ const ProductManage = () => {
 			<Grid container direction="row" justifyContent="space-between" 
 				alignItems="center">
 				<Typography pl={1} variant="h4">상품 관리</Typography>
-				<Button variant="contained" css={css`height:2rem;`}
-					onClick={openForm}>상품 추가</Button>
+				<Button variant="contained" css={css`height:2rem;width:10rem;`}
+					onClick={()=> openForm('add', undefined)}>상품 추가</Button>
 			</Grid>
 			<Grid container css={css`border-bottom:1px solid black;`}></Grid>
 			<Grid container direction="column" alignItems="start" p={2} pt={1} pb={1}
@@ -116,19 +121,20 @@ const ProductManage = () => {
 							<Typography variant="h6" align="left">{product.category}</Typography>
 						</Grid>
 						<Grid item container xs={1} justifyContent="center">
-							<Typography variant="h6" align="left">{product.price}</Typography>
+							<Typography variant="h6" align="left">{priceFormat(product.price)}</Typography>
 						</Grid>
 						<Grid item container xs={2} justifyContent="end">
 							<Button variant="contained" 
-								css={css`${whiteBtn};height:2rem;margin-right:5px;`}>수정</Button>
+								css={css`${whiteBtn};height:2rem;margin-right:5px;`}
+								onClick={()=> openForm('modify', product)}>수정</Button>
 							<Button variant="contained" css={css`${whiteBtn};height:2rem;`} 
 								onClick={()=> askDelete(product)}>삭제</Button>
 						</Grid>
 					</Grid>
 				))}
 			</Grid>
-			<AddProductDialog visible={dialogOpen} visibleFunc={visibleFunc} 
-				successFunc={successFunc} />
+			<AddProductDialog visible={dialogOpen} editType={editType} originProduct={originProduct}
+			 	visibleFunc={visibleFunc} successFunc={successFunc} />
 			<SnackbarProvider preventDuplicate />
 		</Grid>
 	)

@@ -19,7 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-const AddProductDialog = ({ visible, visibleFunc, successFunc }) => {
+const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, successFunc }) => {
 	const [open, setOpen] = useState(false);
 	const [title, setTitle] = useState('');
 	const [category, setCategory] = useState('');
@@ -40,6 +40,7 @@ const AddProductDialog = ({ visible, visibleFunc, successFunc }) => {
 		setPrice(0);
 		setDescription('');
 		setImageSrc(null);
+		setFileName('');
 		visibleFunc(false);
   };
 
@@ -72,6 +73,7 @@ const AddProductDialog = ({ visible, visibleFunc, successFunc }) => {
 
 	const fileImageUpload = () => {
 		if(fileName === '') return;
+		if(fileName === originProduct.fileName) return;
 		return new Promise<string>(async (resolve) => { 
 			await uploadBytes(ref(storage, `productImage/${fileName}`), file)
 			.then((snapshot) => {
@@ -83,32 +85,63 @@ const AddProductDialog = ({ visible, visibleFunc, successFunc }) => {
 		});
 	}
 
-	const addProduct = async () => {
+	const editProduct = async () => {
 		if(title == '' || category == '' || price == 0 || description == '') return;
 		setLoading(true);
 		let imageUrl = await fileImageUpload();
-		await addDoc(collection(db, 'products'), {
-			title: title,
-			category: category,
-			price: price,
-			description: description,
-			image: imageUrl,
-			fileName: fileName,
-			wish: false,
-			createdTime: formatDateKor(new Date()),
-			timeMillisecond: Date.now()
-    }).then((docRef) => {
-			setLoading(false);
-			successFunc(true);
-			handleClose();
-		}).catch((error) => {
-			setLoading(false);
-			console.log(error);
-		});	
+		if(editType === 'add') {
+			await addDoc(collection(db, 'products'), {
+				title: title,
+				category: category,
+				price: price,
+				description: description,
+				image: imageUrl,
+				fileName: fileName,
+				wish: false,
+				createdTime: formatDateKor(new Date()),
+				timeMillisecond: Date.now()
+			}).then((docRef) => {
+				setLoading(false);
+				successFunc(true);
+				handleClose();
+			}).catch((error) => {
+				setLoading(false);
+				console.log(error);
+			});	
+		} else { // modify
+			await updateDoc(doc(db, 'products', originProduct.id), {
+				title: title,
+				category: category,
+				price: price,
+				description: description,
+				image: fileName === originProduct.fileName ? originProduct.image : imageUrl,
+				fileName: fileName,
+				wish: originProduct.wish,
+				createdTime: originProduct.createdTime,
+				timeMillisecond: originProduct.timeMillisecond
+			}).then((docRef) => {
+				setLoading(false);
+				successFunc(true);
+				handleClose();
+			}).catch((error) => {
+				setLoading(false);
+				console.log(error);
+			});	
+		}
 	}
 
 	useEffect(() => {
-		if(visible) handleClickOpen();
+		if(visible) {
+			handleClickOpen();
+			if(editType == 'modify') {
+				setTitle(originProduct.title);
+				setCategory(originProduct.category);
+				setPrice(originProduct.price);
+				setDescription(originProduct.description);
+				setImageSrc(originProduct.image);
+				setFileName(originProduct.fileName);
+			}
+		}
 		else handleClose();
 		return () => {
 			
@@ -119,12 +152,12 @@ const AddProductDialog = ({ visible, visibleFunc, successFunc }) => {
 	return (
 		<div>
 			<Dialog open={open} onClose={handleClose}>
-        <DialogTitle>상품 추가하기</DialogTitle>
+        <DialogTitle>{editType == 'add' ? '상품 추가하기' : '상품 수정하기'}</DialogTitle>
         <DialogContent css={css`max-height:30rem;`}>
           <TextField autoFocus margin="dense" type="text" onChange={titleChange}
-            label="상품명" fullWidth variant="standard" />
+            label="상품명" fullWidth variant="standard" value={title} />
 					<TextField margin="dense" type="number" onChange={priceChange}
-						label="가격(단위 원)" fullWidth variant="standard" />
+						label="가격(단위 원)" fullWidth variant="standard" value={price} />
 					<Box mt={2}>
 						<FormControl sx={{ minWidth: 200 }} size="small">
 							<InputLabel id="demo-select-small">카테고리</InputLabel>
@@ -139,7 +172,7 @@ const AddProductDialog = ({ visible, visibleFunc, successFunc }) => {
 						</FormControl>
 					</Box>
 					<textarea onChange={handleDes} id="description" name="description"
-						placeholder="상품 설명"
+						placeholder="상품 설명" value={description}
             rows={6} cols={63} css={css`padding:10px; margin-top:10px;margin-bottom:10px;`}>
           </textarea>
 					<input accept="image/*" type="file" onChange={e => onUpload(e)} />
@@ -147,7 +180,9 @@ const AddProductDialog = ({ visible, visibleFunc, successFunc }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>취소</Button>
-          <LoadingButton onClick={addProduct} css={blueBtn} loading={loading}>추가</LoadingButton>
+          <LoadingButton onClick={editProduct} css={blueBtn} loading={loading}>
+						{editType == 'add' ? '추가' : '수정'}
+					</LoadingButton>
         </DialogActions>
       </Dialog>
 		</div>
