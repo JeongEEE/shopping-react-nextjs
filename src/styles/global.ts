@@ -3,6 +3,10 @@ import { css } from '@emotion/react';
 export const whiteBtn = css`
 	background-color: white;
 	color: black;
+	&:hover {
+		background-color: #fff;
+		color: black;
+	}
 `
 export const blackTextBtn = css`
 	color: black;
