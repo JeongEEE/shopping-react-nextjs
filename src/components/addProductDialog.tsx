@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { css } from '@emotion/react'
 import { blueBtn } from 'src/styles/global'
 import { db, storage } from 'src/firebaseConfig'
-import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, getDoc, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage";
 import { formatDateKor } from 'src/lib/utils';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -29,6 +29,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 	const [file, setFile] = useState(null);
 	const [fileName, setFileName] = useState('');
 	const [loading, setLoading] = useState<boolean>(false);
+	const [productCount, setProductCount] = useState(0);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -115,6 +116,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 				createdTime: formatDateKor(new Date()),
 				timeMillisecond: Date.now()
 			}).then((docRef) => {
+				plusProductCount();
 				setLoading(false);
 				successFunc(editType);
 				handleClose();
@@ -145,9 +147,25 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 		}
 	}
 
+	const getProductCount = () => {
+		getDoc(doc(db, 'docCount/products'))
+		.then((snapshot) => {
+			setProductCount(snapshot.data().count);
+		}).catch((error) => { });	
+	}
+
+	const plusProductCount = () => {
+		setDoc(doc(db, 'docCount/products'), {
+			count: productCount + 1
+		}).then((docRef) => {
+			setProductCount(productCount + 1);
+		}).catch((error) => { });	
+	}
+
 	useEffect(() => {
 		if(visible) {
 			handleClickOpen();
+			getProductCount();
 			if(editType == 'modify') {
 				setTitle(originProduct.title);
 				setCategory(originProduct.category);

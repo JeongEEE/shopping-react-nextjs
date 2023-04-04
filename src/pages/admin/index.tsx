@@ -46,7 +46,7 @@ const Admin = () => {
 			<Typography pl={1} variant="h4">관리자 메뉴</Typography>
 			<Grid container css={css`border-bottom:1px solid black;`}></Grid>
 			<Grid container direction="row" alignItems="center" p={1}>
-				<Button variant="contained" css={css`height:2rem;`}
+				<Button variant="contained"
 					onClick={() => pushRouter('product')}>상품 관리</Button>
 			</Grid>
 

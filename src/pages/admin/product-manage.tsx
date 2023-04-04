@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { useRouter } from "next/router";
 import { db, storage } from 'src/firebaseConfig'
-import { getDocs, query, collection, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { getDocs, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, startAfter, endBefore } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import AddProductDialog from 'src/components/addProductDialog';
 import { whiteBtn } from 'src/styles/global';
@@ -19,6 +19,11 @@ const ProductManage = () => {
 	const [editType, setEditType] = useState('add');
 	const [originProduct, setOriginProduct] = useState(undefined);
 	const [products, setProducts] = useState([]);
+	const [page, setPage] = useState(1);
+	const [pageCount, setPageCount] = useState(1);
+	const [productCount, setProductCount] = useState(0);
+	const [firstDoc, setFirstDoc] = useState(null);
+	const [lastDoc, setLastDoc] = useState(null);
 
 	const openForm = (edit, product) => {
 		setEditType(edit);
@@ -35,11 +40,27 @@ const ProductManage = () => {
 			anchorOrigin: { vertical: 'top', horizontal: 'center' }})
 		fetchProductData();
 	}
+	const handlePage = (direction) => {
+    if(direction === 'next') {
+			if(page === pageCount) return;
+			else {
+				setPage(page + 1);
+				directionFetch('next');
+			}
+		} else { // prev
+			if(page === 1) return;
+			else {
+				setPage(page - 1)
+				directionFetch('prev');
+			}
+		}
+  }
 
 	const fetchProductData = () => {
 		try {
-			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc")))
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), limit(10)))
 			.then((snapshot) => {
+				setLastDoc(snapshot.docs[snapshot.docs.length-1])
 				const data = snapshot.docs.map(v => {
 					const item = v.data()
 					return { id: v.id, ...item }
@@ -52,6 +73,34 @@ const ProductManage = () => {
 		}
 	}
 
+	const directionFetch = (direction) => {
+		if(direction == 'next') {
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), startAfter(lastDoc), limit(10)))
+			.then((snapshot) => {
+				setFirstDoc(snapshot.docs[snapshot.docs.length-1])
+				setLastDoc(snapshot.docs[snapshot.docs.length-1])
+				const data = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				console.log(data);
+				setProducts(data);
+			}).catch((err) => { });
+		} else {
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), endBefore(firstDoc), limit(10)))
+			.then((snapshot) => {
+				setFirstDoc(snapshot.docs[snapshot.docs.length-1])
+				setLastDoc(snapshot.docs[snapshot.docs.length-1])
+				const data = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				console.log(data);
+				setProducts(data);
+			}).catch((err) => { });
+		}
+	}
+
 	const deleteProduct = async (product) => {
 		await deleteObject(ref(storage, `productImage/${product.fileName}`))
 			.then((snapshot) => { }).catch((error) => { });
@@ -59,6 +108,7 @@ const ProductManage = () => {
 			.then((snapshot) => {
 				enqueueSnackbar('삭제 성공', { variant: 'success', autoHideDuration: 2000,
 					anchorOrigin: { vertical: 'top', horizontal: 'center' }});
+				minusProductCount();
 				fetchProductData();
 			})
 			.catch((error) => { });
@@ -81,8 +131,27 @@ const ProductManage = () => {
 		});
 	}
 
+	const getProductCount = () => {
+		getDoc(doc(db, 'docCount/products'))
+		.then((snapshot) => {
+			setProductCount(snapshot.data().count);
+			let pageCount = Math.floor(snapshot.data().count / 10);
+			if(snapshot.data().count % 10 > 0) pageCount++;
+			setPageCount(pageCount);
+		}).catch((error) => { });
+	}
+
+	const minusProductCount = () => {
+		setDoc(doc(db, 'docCount/products'), {
+			count: productCount - 1
+		}).then((docRef) => {
+			setProductCount(productCount - 1);
+		}).catch((error) => { });	
+	}
+
 	useEffect(() => {
 		fetchProductData();
+		getProductCount();
 		return () => {
 			
 		}
@@ -134,6 +203,13 @@ const ProductManage = () => {
 						</Grid>
 					</Grid>
 				))}
+			</Grid>
+			<Grid container direction="row" justifyContent="center" alignItems="center" mt={2} mb={5}>
+				<Button variant="contained" css={css`${whiteBtn};height:2rem;margin-right:15px;`}
+					onClick={()=> handlePage('prev')}>이전</Button>
+				<Typography variant="h7" align="center">page : {page}</Typography>
+				<Button variant="contained" css={css`${whiteBtn};height:2rem;margin-left:15px;`}
+					onClick={()=> handlePage('next')}>다음</Button>
 			</Grid>
 			<AddProductDialog visible={dialogOpen} editType={editType} originProduct={originProduct}
 			 	visibleFunc={visibleFunc} successFunc={successFunc} />
