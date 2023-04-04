@@ -14,6 +14,8 @@ import { whiteBtn } from 'src/styles/global';
 import { confirmAlert } from 'react-confirm-alert';
 import { priceFormat } from 'src/lib/utils';
 
+const limitValue = 8;
+
 const ProductManage = () => {
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [editType, setEditType] = useState('add');
@@ -59,7 +61,7 @@ const ProductManage = () => {
 
 	const fetchProductData = () => {
 		try {
-			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), limit(8)))
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), limit(limitValue)))
 			.then((snapshot) => {
 				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
@@ -77,7 +79,7 @@ const ProductManage = () => {
 
 	const directionFetch = (direction) => {
 		if(direction == 'next') {
-			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), startAfter(lastDoc), limit(8)))
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), startAfter(lastDoc), limit(limitValue)))
 			.then((snapshot) => {
 				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
@@ -89,7 +91,7 @@ const ProductManage = () => {
 				setProducts(data);
 			}).catch((err) => { });
 		} else {
-			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), endBefore(firstDoc), limitToLast(8)))
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), endBefore(firstDoc), limitToLast(limitValue)))
 			.then((snapshot) => {
 				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
@@ -137,8 +139,8 @@ const ProductManage = () => {
 		getDoc(doc(db, 'docCount/products'))
 		.then((snapshot) => {
 			setProductCount(snapshot.data().count);
-			let pageCount = Math.floor(snapshot.data().count / 8);
-			if(snapshot.data().count % 8 > 0) pageCount++;
+			let pageCount = Math.floor(snapshot.data().count / limitValue);
+			if(snapshot.data().count % limitValue > 0) pageCount++;
 			setPageCount(pageCount);
 		}).catch((error) => { });
 	}

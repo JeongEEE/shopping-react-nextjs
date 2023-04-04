@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import classes from './main-navigation.module.css'
-import networkController from 'src/api/networkController'
 import Logo from './logo'
 import { useRouter } from "next/router";
 import { useRecoilState } from 'recoil';
@@ -15,7 +14,7 @@ import { signOut } from "firebase/auth";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { css, jsx } from '@emotion/react'
 import { db } from 'src/firebaseConfig'
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc, query, orderBy } from "firebase/firestore";
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -108,9 +107,12 @@ function MainNavigation() {
 
 	const fetchCategories = async () => {
 		try {
-			const data = await networkController.getAllCategories();
-			console.log('categories', data);
-			setCategories(data);
+			getDoc(doc(db, 'category/categoryList'))
+			.then((snapshot) => {
+				const data = snapshot.data().data;
+				console.log('categories', data);
+				setCategories(data);
+			}).catch((error) => { });
 		} catch(err) {
 			console.log(err);
 		}

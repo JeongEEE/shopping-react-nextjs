@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import networkController from 'src/api/networkController'
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { css, jsx } from '@emotion/react'
 import { db } from 'src/firebaseConfig'
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDoc, doc } from "firebase/firestore";
 import { useRecoilState } from 'recoil';
 import { userDataState, wishState, basketState, purchaseState } from 'src/states/atoms';
 import { formatDateKor } from 'src/lib/utils';
@@ -168,14 +167,15 @@ const ProductDetail = ({ id }) => {
 		router.push('/purchase');
 	}
 
+	const fetchProductDetail = () => {
+		getDoc(doc(db, 'products', id)).then((snapshot) => {
+			let data = snapshot.data();
+			setProduct(data);
+		}).catch((error) => { });
+	}
+
 	useEffect(() => {
-		networkController.getProductData(id).then((data) => {
-			console.log(data);
-			const find = wishData.findIndex((el, index, arr) => el.title === data.title);
-			if(find == -1) setProduct({...data, wish: false});
-			else setProduct({...data, wish: true});
-		});
-		console.log(basketData);
+		fetchProductDetail();
 	}, [])
 	
 	return (

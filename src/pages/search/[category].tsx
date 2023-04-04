@@ -11,6 +11,8 @@ import Button from '@mui/material/Button';
 import { css } from '@emotion/react'
 import CheckIcon from '@mui/icons-material/Check';
 import { blackTextBtn } from 'src/styles/global'
+import { db } from 'src/firebaseConfig'
+import { getDocs, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, limitToLast, startAfter, endBefore, endAt, where } from "firebase/firestore";
 
 // export async function getServerSideProps({ query: { category } }) {
 // 	// 새로고침할때 쿼리값이 날라가는걸 방지하기위해 서버사이드로 쿼리를 받아옴
@@ -26,21 +28,31 @@ const SearchPage = ({ category }) => {
 	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
 	const [userData, setUserData] = useRecoilState(userDataState);
 	const [sort, setSort] = useState(0);
+	const [firstDoc, setFirstDoc] = useState(null);
+	const [lastDoc, setLastDoc] = useState(null);
 
-	const fetchSearchData = async () => {
+	const fetchSearchData = () => {
 		try {
-			const data: Array<Product> = await networkController.getProductsSpecificCategory(category);
-			console.log(data);
-			if(wishData.length != 0 && userData.email) {
-				let newArray = JSON.parse(JSON.stringify(data));
-				newArray.forEach((product, idx) => {
-					const find = wishData.findIndex((el, index, arr) => el.title === product.title);
-					if(find != -1) product.wish = true;
-				})
-				setProducts(newArray);
-			} else {
-				setProducts(data);
-			}
+			getDocs(query(collection(db, 'products'), where('category', '==', category), limit(16)))
+			.then((snapshot) => {
+				setFirstDoc(snapshot.docs[0])
+				setLastDoc(snapshot.docs[snapshot.docs.length-1])
+				const data = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				console.log(data);
+				if(wishData.length != 0 && userData.email) {
+					setProducts(data);
+				} else {
+					let newArray = JSON.parse(JSON.stringify(data));
+					newArray.forEach((product, idx) => {
+						const find = wishData.findIndex((el, index, arr) => el.title === product.title);
+						if(find != -1) product.wish = false;
+					})
+					setProducts(newArray);
+				}
+			}).catch((err) => { });
 		} catch(err) {
 			console.log(err);		
 		}
