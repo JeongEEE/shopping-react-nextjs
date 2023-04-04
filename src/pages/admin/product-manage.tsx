@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { useRouter } from "next/router";
 import { db, storage } from 'src/firebaseConfig'
-import { getDocs, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, startAfter, endBefore } from "firebase/firestore";
+import { getDocs, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, limitToLast, startAfter, endBefore, endAt } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import AddProductDialog from 'src/components/addProductDialog';
 import { whiteBtn } from 'src/styles/global';
@@ -39,6 +39,7 @@ const ProductManage = () => {
 			{ variant: 'success', autoHideDuration: 2000,
 			anchorOrigin: { vertical: 'top', horizontal: 'center' }})
 		fetchProductData();
+		getProductCount();
 	}
 	const handlePage = (direction) => {
     if(direction === 'next') {
@@ -58,8 +59,9 @@ const ProductManage = () => {
 
 	const fetchProductData = () => {
 		try {
-			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), limit(10)))
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), limit(8)))
 			.then((snapshot) => {
+				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
 				const data = snapshot.docs.map(v => {
 					const item = v.data()
@@ -75,9 +77,9 @@ const ProductManage = () => {
 
 	const directionFetch = (direction) => {
 		if(direction == 'next') {
-			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), startAfter(lastDoc), limit(10)))
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), startAfter(lastDoc), limit(8)))
 			.then((snapshot) => {
-				setFirstDoc(snapshot.docs[snapshot.docs.length-1])
+				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
 				const data = snapshot.docs.map(v => {
 					const item = v.data()
@@ -87,9 +89,9 @@ const ProductManage = () => {
 				setProducts(data);
 			}).catch((err) => { });
 		} else {
-			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), endBefore(firstDoc), limit(10)))
+			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), endBefore(firstDoc), limitToLast(8)))
 			.then((snapshot) => {
-				setFirstDoc(snapshot.docs[snapshot.docs.length-1])
+				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
 				const data = snapshot.docs.map(v => {
 					const item = v.data()
@@ -135,8 +137,8 @@ const ProductManage = () => {
 		getDoc(doc(db, 'docCount/products'))
 		.then((snapshot) => {
 			setProductCount(snapshot.data().count);
-			let pageCount = Math.floor(snapshot.data().count / 10);
-			if(snapshot.data().count % 10 > 0) pageCount++;
+			let pageCount = Math.floor(snapshot.data().count / 8);
+			if(snapshot.data().count % 8 > 0) pageCount++;
 			setPageCount(pageCount);
 		}).catch((error) => { });
 	}
