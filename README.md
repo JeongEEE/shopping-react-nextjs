@@ -8,13 +8,14 @@ https://shopping-react-ece42.firebaseapp.com
 ----
 ## 주요기능
 - Firebase 로그인, 회원가입
-- Fake Store API 상품 표시
+- 상품 목록(Pagination)
 - 장바구니
 - 찜 리스트
-- 카테고리 검색
+- 카테고리 검색(Pagination)
 - 마이페이지
 - 결제페이지(실제 결제x)
 - 주문목록
+- 관리자 페이지(Pagination)(상품 추가, 수정, 삭제)
 
 ----
 ## Getting Started
