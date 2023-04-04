@@ -27,10 +27,11 @@ const focus = css`
 
 const ProductItem = ({ product }) => {
 	return (
-		<Grid item container xs={3} p={2} css={focus}>
+		<Grid item xs={3} p={2} css={focus} justifyContent="center">
 			<Link href={`/product/${product.id}`}>
 				<Grid container justifyContent="center">
-					<img src={product.image} alt={product.title} width={200} height={200} />
+					<img src={product.image} alt={product.title} height={200}
+						css={css`max-width:200px;`} />
 					<Typography variant="h5" css={detailCss}>{product.title}</Typography>
 					<Grid container direction="row" justifyContent="space-between" alignItems="center">
 						<Typography variant="h6" align="right">{product.price}$</Typography>

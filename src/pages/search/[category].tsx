@@ -12,7 +12,11 @@ import { css } from '@emotion/react'
 import CheckIcon from '@mui/icons-material/Check';
 import { blackTextBtn } from 'src/styles/global'
 import { db } from 'src/firebaseConfig'
-import { getDocs, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, limitToLast, startAfter, endBefore, endAt, where } from "firebase/firestore";
+import { getDocs, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, 
+	updateDoc, limit, limitToLast, startAfter, endBefore, endAt, where } from "firebase/firestore";
+import { whiteBtn } from 'src/styles/global';
+
+const limitValue = 24;
 
 // export async function getServerSideProps({ query: { category } }) {
 // 	// 새로고침할때 쿼리값이 날라가는걸 방지하기위해 서버사이드로 쿼리를 받아옴
@@ -28,8 +32,53 @@ const SearchPage = ({ category }) => {
 	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
 	const [userData, setUserData] = useRecoilState(userDataState);
 	const [sort, setSort] = useState(0);
+	const [page, setPage] = useState(1);
 	const [firstDoc, setFirstDoc] = useState(null);
 	const [lastDoc, setLastDoc] = useState(null);
+
+	const handlePage = (direction) => {
+    if(direction === 'next') {
+			if(products.length < limitValue) return;
+			else {
+				setPage(page + 1);
+				directionFetch('next');
+			}
+		} else { // prev
+			if(page === 1) return;
+			else {
+				setPage(page - 1)
+				directionFetch('prev');
+			}
+		}
+  }
+
+	const directionFetch = (direction) => {
+		if(direction == 'next') {
+			getDocs(query(collection(db, 'products'), where('category', '==', category), startAfter(lastDoc), limit(limitValue)))
+			.then((snapshot) => {
+				setFirstDoc(snapshot.docs[0])
+				setLastDoc(snapshot.docs[snapshot.docs.length-1])
+				const data = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				console.log(data);
+				setProducts(data);
+			}).catch((err) => { });
+		} else {
+			getDocs(query(collection(db, 'products'), where('category', '==', category), endBefore(firstDoc), limitToLast(limitValue)))
+			.then((snapshot) => {
+				setFirstDoc(snapshot.docs[0])
+				setLastDoc(snapshot.docs[snapshot.docs.length-1])
+				const data = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				console.log(data);
+				setProducts(data);
+			}).catch((err) => { });
+		}
+	}
 
 	const fetchSearchData = () => {
 		try {
@@ -97,6 +146,13 @@ const SearchPage = ({ category }) => {
 					{products.map(product => (
 						<ProductItem product={product} key={product.id} />
 					))}
+				</Grid>
+				<Grid container direction="row" justifyContent="center" alignItems="center" mt={2} mb={5}>
+					<Button variant="contained" css={css`${whiteBtn};height:2rem;margin-right:15px;`}
+						onClick={()=> handlePage('prev')}>이전</Button>
+					<Typography variant="h7" align="center">page : {page}</Typography>
+					<Button variant="contained" css={css`${whiteBtn};height:2rem;margin-left:15px;`}
+						onClick={()=> handlePage('next')}>다음</Button>
 				</Grid>
 			</Grid>
 		</Box>

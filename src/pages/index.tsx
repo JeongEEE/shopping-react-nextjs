@@ -16,18 +16,15 @@ import { useRecoilState } from 'recoil';
 import { userDataState, wishState } from 'src/states/atoms';
 import Carousel from 'react-material-ui-carousel'
 import { Product } from 'src/types/product'
-import { getDocs, getDoc, query, collection, orderBy, doc, limit, limitToLast, startAfter, endBefore } from "firebase/firestore";
+import { getDocs, getDoc, query, collection, orderBy, doc, limit, limitToLast, 
+	startAfter, endBefore } from "firebase/firestore";
 import { whiteBtn } from 'src/styles/global';
 
 const limitValue = 24;
 
 export async function getStaticProps() {
   try {
-		// const data: Array<Product> = await networkController.getAllProducts();
 		const snapshot = await getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), limit(limitValue)));
-		// data.forEach(item => {
-		// 	item.wish = false;
-		// })
 		const data = snapshot.docs.map(v => {
 			const item = v.data()
 			return { id: v.id, ...item }
