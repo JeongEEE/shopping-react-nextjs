@@ -15,6 +15,7 @@ import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { formatDateKor } from 'src/lib/utils';
+import { priceFormat } from 'src/lib/utils';
 
 const detailCss = css`
 	width: 100%;
@@ -235,7 +236,7 @@ const WishListPage = () => {
 									<Typography variant="h5" css={detailCss}>{product.title}</Typography>
 									<Grid container direction="row" justifyContent="start">
 										<Typography variant="h6" align="right" mr={2}>
-											{product.price}$
+											{priceFormat(product.price)}원
 										</Typography>
 									</Grid>
 								</Grid>

@@ -15,6 +15,7 @@ import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { confirmAlert } from 'react-confirm-alert'; // https://github.com/GA-MO/react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useRouter } from "next/router";
+import { priceFormat } from 'src/lib/utils';
 
 const detailCss = css`
 	width: 100%;
@@ -238,7 +239,7 @@ const Basket = () => {
 									<Typography variant="h5" css={detailCss}>{product.title}</Typography>
 									<Grid container direction="row" justifyContent="start">
 										<Typography variant="h6" align="right" mr={2}>
-											{product.price * product.count}$
+											{priceFormat(product.price * product.count)}원
 										</Typography>
 										<input type="number" css={input} min={1} max={10} 
 											value={product.count} 
@@ -254,7 +255,7 @@ const Basket = () => {
 						<Grid container css={css`border-bottom:1px solid black;`}></Grid>
 						<Grid container direction="row" justifyContent="center">
 							<Grid item container xs={10} p={2} justifyContent="end" alignItems="center">
-								<Typography variant="h6">합계 : {totalPrice}$</Typography>
+								<Typography variant="h6">합계 : {priceFormat(totalPrice)}원</Typography>
 							</Grid>
 							<Grid item container xs={2} p={2}>
 								<Button variant="contained" css={css`width:100%;height:2.5rem;`}

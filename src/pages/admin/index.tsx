@@ -23,6 +23,9 @@ const Admin = () => {
 			case 'recoil':
 				router.push('/admin/white-test/recoil-test');
 				break;
+			case 'category':
+				router.push('/admin/category-manage');
+				break;
 		}
 	}
 
@@ -48,6 +51,8 @@ const Admin = () => {
 			<Grid container direction="row" alignItems="center" p={1}>
 				<Button variant="contained"
 					onClick={() => pushRouter('product')}>상품 관리</Button>
+				<Button variant="contained" css={css`margin-left:10px;`}
+					onClick={() => pushRouter('category')}>카테고리 관리</Button>
 			</Grid>
 
 			<Typography pl={1} mt={1} variant="h4">White Test</Typography>

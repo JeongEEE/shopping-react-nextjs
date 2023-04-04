@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { css } from '@emotion/react'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { priceFormat } from 'src/lib/utils';
 
 const detailCss = css`
 	width: 100%;
@@ -34,7 +35,7 @@ const ProductItem = ({ product }) => {
 						css={css`max-width:200px;`} />
 					<Typography variant="h5" css={detailCss}>{product.title}</Typography>
 					<Grid container direction="row" justifyContent="space-between" alignItems="center">
-						<Typography variant="h6" align="right">{product.price}$</Typography>
+						<Typography variant="h6" align="right">{priceFormat(product.price)}원</Typography>
 						{product.wish ? <FavoriteIcon css={css`color:red;`} /> : <FavoriteBorderOutlinedIcon />}
 					</Grid>
 				</Grid>

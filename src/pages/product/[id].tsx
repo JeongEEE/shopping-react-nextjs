@@ -14,6 +14,7 @@ import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Product } from 'src/types/product'
+import { priceFormat } from 'src/lib/utils';
 
 const textdiv = css`
 	height: 2rem;
@@ -190,7 +191,7 @@ const ProductDetail = ({ id }) => {
 							<Typography variant="h4">{product.title}</Typography>
 						</Grid>
 						<Grid container justifyContent="right" mt={1} mb={1}>
-							<Typography variant="h5" css={textdiv}>{product.price}$</Typography>
+							<Typography variant="h5" css={textdiv}>{priceFormat(product.price ?? 0)}원</Typography>
 						</Grid>
 						<Grid>
 							<Typography variant="h6">{product.description}</Typography>

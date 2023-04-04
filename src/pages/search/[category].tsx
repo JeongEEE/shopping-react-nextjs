@@ -123,7 +123,7 @@ const SearchPage = ({ category }) => {
 
 	useEffect(() => {
 		fetchSearchData();
-	
+		setSort(0);
 		return () => {
 			
 		}
