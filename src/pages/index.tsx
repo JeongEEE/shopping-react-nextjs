@@ -86,7 +86,7 @@ export default function Home({ productData }) {
 					return { id: v.id, ...item }
 				});
 				console.log(data);
-				setProducts(data);
+				checkWishProduct(data);
 			}).catch((err) => { });
 		} else {
 			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), endBefore(firstDoc), limitToLast(limitValue)))
@@ -98,7 +98,7 @@ export default function Home({ productData }) {
 					return { id: v.id, ...item }
 				});
 				console.log(data);
-				setProducts(data);
+				checkWishProduct(data);
 			}).catch((err) => { });
 		}
 	}
@@ -113,10 +113,7 @@ export default function Home({ productData }) {
 		}).catch((error) => { });
 	}
 
-	useEffect(() => {
-		console.log('컴포넌트가 화면에 나타남');
-		initFetch();
-		getProductCount();
+	const checkWishProduct = (productData) => {
 		if(wishData.length != 0 && userData.email) {
 			let newArray = JSON.parse(JSON.stringify(productData));
 			newArray.forEach((product, idx) => {
@@ -127,6 +124,13 @@ export default function Home({ productData }) {
 		} else {
 			setProducts(productData);
 		}
+	}
+
+	useEffect(() => {
+		console.log('컴포넌트가 화면에 나타남');
+		initFetch();
+		getProductCount();
+		checkWishProduct(productData);
 		return () => {
 			console.log('컴포넌트가 화면에서 사라짐');
 		}

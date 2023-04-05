@@ -52,6 +52,19 @@ const SearchPage = ({ category }) => {
 		}
   }
 
+	const checkWishProduct = (data) => {
+		if(wishData.length != 0 && userData.email) {
+			setProducts(data);
+		} else {
+			let newArray = JSON.parse(JSON.stringify(data));
+			newArray.forEach((product, idx) => {
+				const find = wishData.findIndex((el, index, arr) => el.title === product.title);
+				if(find != -1) product.wish = false;
+			})
+			setProducts(newArray);
+		}
+	}
+
 	const directionFetch = (direction) => {
 		if(direction == 'next') {
 			getDocs(query(collection(db, 'products'), where('category', '==', category), startAfter(lastDoc), limit(limitValue)))
@@ -63,7 +76,7 @@ const SearchPage = ({ category }) => {
 					return { id: v.id, ...item }
 				});
 				console.log(data);
-				setProducts(data);
+				checkWishProduct(data);
 			}).catch((err) => { });
 		} else {
 			getDocs(query(collection(db, 'products'), where('category', '==', category), endBefore(firstDoc), limitToLast(limitValue)))
@@ -75,7 +88,7 @@ const SearchPage = ({ category }) => {
 					return { id: v.id, ...item }
 				});
 				console.log(data);
-				setProducts(data);
+				checkWishProduct(data);
 			}).catch((err) => { });
 		}
 	}
@@ -91,16 +104,7 @@ const SearchPage = ({ category }) => {
 					return { id: v.id, ...item }
 				});
 				console.log(data);
-				if(wishData.length != 0 && userData.email) {
-					setProducts(data);
-				} else {
-					let newArray = JSON.parse(JSON.stringify(data));
-					newArray.forEach((product, idx) => {
-						const find = wishData.findIndex((el, index, arr) => el.title === product.title);
-						if(find != -1) product.wish = false;
-					})
-					setProducts(newArray);
-				}
+				checkWishProduct(data);
 			}).catch((err) => { });
 		} catch(err) {
 			console.log(err);		

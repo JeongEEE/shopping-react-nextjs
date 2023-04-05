@@ -13,10 +13,12 @@ import AddProductDialog from 'src/components/addProductDialog';
 import { whiteBtn } from 'src/styles/global';
 import { confirmAlert } from 'react-confirm-alert';
 import { priceFormat } from 'src/lib/utils';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const limitValue = 8;
 
 const ProductManage = () => {
+	const router = useRouter();
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [editType, setEditType] = useState('add');
 	const [originProduct, setOriginProduct] = useState(undefined);
@@ -27,6 +29,9 @@ const ProductManage = () => {
 	const [firstDoc, setFirstDoc] = useState(null);
 	const [lastDoc, setLastDoc] = useState(null);
 
+	const backPage = () => {
+		router.back();
+	}
 	const openForm = (edit, product) => {
 		setEditType(edit);
 		setOriginProduct(product);
@@ -166,7 +171,14 @@ const ProductManage = () => {
 		<Grid container direction="row" pt={1}>
 			<Grid container direction="row" justifyContent="space-between" 
 				alignItems="center">
-				<Typography pl={1} variant="h4">상품 관리</Typography>
+				<Grid container direction="row" justifyContent="start" alignItems="center"
+					css={css`width:500px;`}>
+					<Button variant="text" css={css`margin:0;padding:0;min-width:40px;height:40px;`} 
+						onClick={backPage}>
+						<ChevronLeftIcon fontSize="large" sx={{ color: 'black' }} />
+					</Button>
+					<Typography pl={1} variant="h4">관리자 메뉴 - 상품 관리</Typography>
+				</Grid>
 				<Button variant="contained" css={css`height:2rem;width:10rem;`}
 					onClick={()=> openForm('add', undefined)}>상품 추가</Button>
 			</Grid>
