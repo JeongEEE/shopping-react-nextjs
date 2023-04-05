@@ -5,7 +5,7 @@ import Logo from './logo'
 import { useRouter } from "next/router";
 import { useRecoilState } from 'recoil';
 import { userDataState, wishState, basketState, categoriesState,
-	searchTextState, wideState } from 'src/states/atoms';
+	searchTextState } from 'src/states/atoms';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
@@ -69,7 +69,7 @@ const searchBtn = css`
 `
 
 const headerStyle = (props) => css`
-	width: ${props.localWideValue ? '1000px' : '800px'};
+	width: 800px;
 	height: 100%;
 `
 
@@ -80,7 +80,6 @@ function MainNavigation() {
 	const [basketData, setBasketData] = useRecoilState<Array<Product>>(basketState);
 	const [categories, setCategories] = useRecoilState<Array<string>>(categoriesState);
 	const [localSearchText, setLocalSearchText] = useRecoilState<string>(searchTextState);
-	const [localWideValue, setLocalWideValue] = useRecoilState(wideState);
 	const [access, setAccess] = useState<boolean>(false);
 	const [email, setEmail] = useState<string>('');
 	const [basketCount, setBasketCount] = useState<number>(0);
@@ -246,7 +245,7 @@ function MainNavigation() {
   return (
     <header className={classes.header}>
 			<Grid container direction="row" justifyContent="left" alignItems="center"
-				css={headerStyle({localWideValue})}>
+				css={headerStyle}>
 				<Button css={categoryBtn}
 					aria-controls={open2 ? 'basic-menu' : undefined}
 					aria-haspopup="true" aria-expanded={open2 ? 'true' : undefined}
@@ -266,7 +265,7 @@ function MainNavigation() {
 				<Link href="/">
 					<Logo />
 				</Link>
-				<Grid container direction="row" ml={localWideValue ? 20 : 8} 
+				<Grid container direction="row" ml={8} 
 					css={css`width:400px;`}>
 					<TextField id="outlined-size-small" onChange={searchTextChange}
 						css={css`border-radius: 0;`} placeholder="찾고싶은 상품을 검색해보세요"
