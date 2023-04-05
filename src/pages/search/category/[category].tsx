@@ -54,14 +54,14 @@ const SearchPage = ({ category }) => {
 
 	const checkWishProduct = (data) => {
 		if(wishData.length != 0 && userData.email) {
-			setProducts(data);
-		} else {
 			let newArray = JSON.parse(JSON.stringify(data));
 			newArray.forEach((product, idx) => {
 				const find = wishData.findIndex((el, index, arr) => el.title === product.title);
-				if(find != -1) product.wish = false;
+				if(find != -1) product.wish = true;
 			})
 			setProducts(newArray);
+		} else {
+			setProducts(data);
 		}
 	}
 
@@ -95,7 +95,7 @@ const SearchPage = ({ category }) => {
 
 	const fetchSearchData = () => {
 		try {
-			getDocs(query(collection(db, 'products'), where('category', '==', category), limit(16)))
+			getDocs(query(collection(db, 'products'), where('category', '==', category), limit(limitValue)))
 			.then((snapshot) => {
 				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])

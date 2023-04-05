@@ -84,7 +84,7 @@ const CategoryManage = () => {
 	const AddCategory = () => {
 		if(categoryText === '') return;
 		const blank_pattern = /^\s+|\s+$/g;
-		if(str.replace(blank_pattern, '' ) == "" ) return;
+		if(categoryText.replace(blank_pattern, '' ) == "" ) return;
 
 		setLoading(true);
 		const newList = [...categories, categoryText];

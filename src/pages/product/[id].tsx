@@ -184,7 +184,8 @@ const ProductDetail = ({ id }) => {
 			<Grid container>
 				<Grid container direction="row">
 					<Grid item container xs={6} p={2} justifyContent="center">
-						<img src={product.image} alt={product.title} width={400} height={400} />
+						<img src={product.image} alt={product.title} height={400}
+							css={css`max-width:400px;`} />
 					</Grid>
 					<Grid item container xs={6} p={2}>
 						<Grid container>
@@ -203,7 +204,7 @@ const ProductDetail = ({ id }) => {
 							</Grid>
 							<Grid item container xs={3} p={1}>
 								<Button variant="contained" css={wishBtn} onClick={addProductInWishList}>
-									{product.wish ? <FavoriteIcon css={css`color:red;`} /> : <FavoriteBorderOutlinedIcon />}
+									{checkAlreadyInWish() ? <FavoriteIcon css={css`color:red;`} /> : <FavoriteBorderOutlinedIcon />}
 									찜 하기
 								</Button>
 							</Grid>

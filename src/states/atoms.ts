@@ -32,9 +32,21 @@ export const categoriesState = atom({
 	effects_UNSTABLE: [persistAtom],
 });
 
+export const searchTextState = atom({
+  key: 'searchTextState',
+	default: '',
+	effects_UNSTABLE: [persistAtom],
+});
+
 export const purchaseState = atom({
   key: 'purchaseState',
 	default: [],
+	effects_UNSTABLE: [persistAtom],
+});
+
+export const wideState = atom({
+  key: 'wideState',
+	default: false,
 	effects_UNSTABLE: [persistAtom],
 });
 

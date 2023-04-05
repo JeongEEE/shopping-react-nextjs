@@ -3,6 +3,8 @@ import MainNavigation from './main-navigation'
 import { css, jsx } from '@emotion/react'
 import { useRouter } from 'next/router'
 import { auth } from 'src/firebaseConfig'
+import { useRecoilState } from 'recoil';
+import { wideState } from 'src/states/atoms';
 
 type mainContentTypeProps = {
 	wide: boolean;
@@ -22,6 +24,7 @@ const Layout = (props: any) => {
 	const router = useRouter()
 	const [noNav, setNoNav] = useState(false);
 	const [wide, setWide] = useState(false);
+	const [localWideValue, setLocalWideValue] = useRecoilState(wideState);
 
 	useEffect(() => {
 		// firebase 로그인 상태 변경을 감지
@@ -33,10 +36,18 @@ const Layout = (props: any) => {
       }
     });
 
-		if(router.asPath.includes('/search')) setWide(true);
+		if(router.asPath.includes('/search')) {
+			setWide(true);
+			setLocalWideValue(true);
+		}
 		router.events.on('routeChangeComplete', (url) => {
-			if(url.includes('/search')) setWide(true);
-			else setWide(false);
+			if(url.includes('/search')) {
+				setWide(true);
+				setLocalWideValue(true);
+			} else {
+				setWide(false);
+				setLocalWideValue(false);
+			}
     })
 		return () => {
 			router.events.off('routeChangeComplete', () => { })

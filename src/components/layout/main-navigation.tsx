@@ -4,7 +4,8 @@ import classes from './main-navigation.module.css'
 import Logo from './logo'
 import { useRouter } from "next/router";
 import { useRecoilState } from 'recoil';
-import { userDataState, wishState, basketState, categoriesState } from 'src/states/atoms';
+import { userDataState, wishState, basketState, categoriesState,
+	searchTextState, wideState } from 'src/states/atoms';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
@@ -22,6 +23,8 @@ import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { Product } from 'src/types/product'
 import { User } from 'src/types/user'
 import useMediaQuery from '@mui/material/useMediaQuery';
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
 
 const userBtn = css`
 	color: black;
@@ -54,6 +57,21 @@ const categoryBtn = css`
 		color: white;
 	}
 `
+const searchBtn = css`
+	margin: 0;
+	padding: 0;
+	min-width: 35px;
+	background-color: #415df9;
+	border-radius: 0;
+	&:hover {
+		background-color: #7e90f7;
+	}
+`
+
+const headerStyle = (props) => css`
+	width: ${props.localWideValue ? '1000px' : '800px'};
+	height: 100%;
+`
 
 function MainNavigation() {
 	const router = useRouter();
@@ -61,6 +79,8 @@ function MainNavigation() {
 	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
 	const [basketData, setBasketData] = useRecoilState<Array<Product>>(basketState);
 	const [categories, setCategories] = useRecoilState<Array<string>>(categoriesState);
+	const [localSearchText, setLocalSearchText] = useRecoilState<string>(searchTextState);
+	const [localWideValue, setLocalWideValue] = useRecoilState(wideState);
 	const [access, setAccess] = useState<boolean>(false);
 	const [email, setEmail] = useState<string>('');
 	const [basketCount, setBasketCount] = useState<number>(0);
@@ -68,6 +88,7 @@ function MainNavigation() {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
 	const isMobile = useMediaQuery("(max-width: 600px)");
+	const [searchText, setSearchText] = useState('');
 
   const open = Boolean(anchorEl);
   const menuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -85,7 +106,7 @@ function MainNavigation() {
   };
 	const goCategorySearch = (category: string) => {
 		setAnchorEl2(null);
-		router.push(`/search/${category}`);
+		router.push(`/search/category/${category}`);
 	}
   const goWishList = () => {
     setAnchorEl(null);
@@ -103,6 +124,9 @@ function MainNavigation() {
 	const goAdmin = () => {
 		setAnchorEl(null);
 		router.push('/admin');
+	}
+	const searchTextChange = (e) => {
+		setSearchText(e.target.value);
 	}
 
 	const fetchCategories = async () => {
@@ -153,34 +177,7 @@ function MainNavigation() {
 			console.log(err);
 		}
 	}
-	
-	useEffect(() => {
-		console.log('UserData-' ,userData);
-		if(userData.email) {
-			setEmail(userData.email);
-			setAccess(true)
-			fetchBasketData();
-			fetchWishData();
-		} else setEmail('');
-		return () => {
-			
-		}
-	}, [userData])
 
-	useEffect(() => {
-		setBasketCount(basketData.length)
-		return () => {
-			
-		}
-	}, [basketData])
-
-	useEffect(() => {
-		// Next Link태그는 새로고침시 pre랜더된 html과 일치하지않는 hydration 오류가 발생하기때문에
-		// 마운트된 후에 조건랜더링을 해야함
-		setMounted(true);
-		fetchCategories();
-	}, [])
-	
 	const logoutPopup = () => {
 		confirmAlert({ title: '로그아웃', message: '로그아웃 하시겠습니까?',
       buttons: [
@@ -210,10 +207,46 @@ function MainNavigation() {
 		});
 	}
 
+	const requestSearch = () => {
+		if(searchText === '') return;
+		const blank_pattern = /^\s+|\s+$/g;
+		if(searchText.replace(blank_pattern, '' ) == "" ) return;
+		setLocalSearchText(searchText);
+		setSearchText('');
+		router.push(`/search/text/${searchText}`);
+	}
+	
+	useEffect(() => {
+		console.log('UserData-' ,userData);
+		if(userData.email) {
+			setEmail(userData.email);
+			setAccess(true)
+			fetchBasketData();
+			fetchWishData();
+		} else setEmail('');
+		return () => {
+			
+		}
+	}, [userData])
+
+	useEffect(() => {
+		setBasketCount(basketData.length)
+		return () => {
+			
+		}
+	}, [basketData])
+
+	useEffect(() => {
+		// Next Link태그는 새로고침시 pre랜더된 html과 일치하지않는 hydration 오류가 발생하기때문에
+		// 마운트된 후에 조건랜더링을 해야함
+		setMounted(true);
+		fetchCategories();
+	}, [])
+
   return (
     <header className={classes.header}>
 			<Grid container direction="row" justifyContent="left" alignItems="center"
-				css={css`width:400px;height:100%;`}>
+				css={headerStyle({localWideValue})}>
 				<Button css={categoryBtn}
 					aria-controls={open2 ? 'basic-menu' : undefined}
 					aria-haspopup="true" aria-expanded={open2 ? 'true' : undefined}
@@ -233,6 +266,20 @@ function MainNavigation() {
 				<Link href="/">
 					<Logo />
 				</Link>
+				<Grid container direction="row" ml={localWideValue ? 20 : 8} 
+					css={css`width:400px;`}>
+					<TextField id="outlined-size-small" onChange={searchTextChange}
+						css={css`border-radius: 0;`} placeholder="찾고싶은 상품을 검색해보세요"
+						size="small" InputProps={{ sx: { width: '350px', height: '2.5rem',
+							borderRadius: 0, border: '2px solid #415df9' } }} 
+						value={searchText}
+						onKeyPress= {(e) => {
+							if (e.key === 'Enter') requestSearch();
+						}} />
+					<Button variant="text" css={searchBtn} onClick={requestSearch}>
+						<SearchIcon fontSize="large" sx={{ color: 'white' }} />
+					</Button> 
+				</Grid>
 			</Grid>
       <nav>
 				<ul>
