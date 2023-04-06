@@ -4,6 +4,8 @@ export interface Product {
 	checked: boolean;
 	createdTime: string;
 	description: string;
+	price: number;
+	discount: number;
 	email: string;
 	image: string;
 	timeMillisecond: number;

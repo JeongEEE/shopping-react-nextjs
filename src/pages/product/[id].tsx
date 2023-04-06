@@ -36,6 +36,11 @@ const input = css`
 	font-size: 1.5rem;
 	padding: 5px;
 `
+const priceStyle = (props) => css`
+	text-decoration: ${props.product.discount > 0 ? 'line-through' : 'none'};
+	font-size: ${props.product.discount > 0 ? '1rem' : '1.5rem'};
+	color: ${props.product.discount > 0 ? 'grey' : 'black' };
+`
 
 // export async function getServerSideProps({ query: { id } }) {
 // 	// 새로고침할때 쿼리값이 날라가는걸 방지하기위해 서버사이드로 쿼리를 받아옴
@@ -93,6 +98,7 @@ const ProductDetail = ({ id }) => {
 			category: product.category,
 			image: product.image,
 			price: product.price,
+			discount: product.discount,
 			title: product.title,
 			description: product.description,
 			count: productCount,
@@ -135,6 +141,7 @@ const ProductDetail = ({ id }) => {
 			category: product.category,
 			image: product.image,
 			price: product.price,
+			discount: product.discount,
 			title: product.title,
 			description: product.description,
 			count: productCount,
@@ -191,9 +198,21 @@ const ProductDetail = ({ id }) => {
 						<Grid container>
 							<Typography variant="h4">{product.title}</Typography>
 						</Grid>
-						<Grid container justifyContent="right" mt={1} mb={1}>
-							<Typography variant="h5" css={textdiv}>{priceFormat(product.price ?? 0)}원</Typography>
+						<Grid container justifyContent="right" mt={1}>
+							<Typography variant="h5" css={priceStyle({product})}>{priceFormat(product.price ?? 0)}원</Typography>
 						</Grid>
+						{product.discount > 0
+							? <Grid container direction="row" justifyContent="right" mb={1}>
+									<Typography variant="h5" align="right"
+										css={css`color: #3d5afc;margin-right:5px;font-weight:bold;`}>
+										J몰 할인가
+									</Typography>
+									<Typography variant="h5" align="right">
+										{priceFormat(product.price - (product.price * (0.01 * product.discount)))}원
+									</Typography>
+								</Grid>
+							: <Grid container justifyContent="right" mb={1}></Grid>
+						}
 						<Grid>
 							<Typography variant="h6">{product.description}</Typography>
 						</Grid>

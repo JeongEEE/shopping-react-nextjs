@@ -35,6 +35,11 @@ const whiteBtn = css`
 		background-color: white;
 	}
 `
+const priceStyle = (props) => css`
+	text-decoration: ${props.product.discount > 0 ? 'line-through' : 'none'};
+	font-size: ${props.product.discount > 0 ? '1rem' : '1.4rem'};
+	color: ${props.product.discount > 0 ? 'grey' : 'black' };
+`
 
 const WishListPage = () => {
 	const [userData, setUserData] = useRecoilState(userDataState);
@@ -161,6 +166,7 @@ const WishListPage = () => {
 			category: product.category,
 			image: product.image,
 			price: product.price,
+			discount: product.discount,
 			title: product.title,
 			description: product.description,
 			count: product.count,
@@ -235,7 +241,19 @@ const WishListPage = () => {
 								<Grid item container xs={8} p={2}>
 									<Typography variant="h5" css={detailCss}>{product.title}</Typography>
 									<Grid container direction="row" justifyContent="start">
-										<Typography variant="h6" align="right" mr={2}>
+										{product.discount > 0
+											? <Grid item container xs={'auto'} direction="row" justifyContent="left">
+													<Typography variant="h5" align="right"
+														css={css`color: #3d5afc;margin-right:5px;font-weight:bold;`}>
+														J몰 할인가
+													</Typography>
+													<Typography variant="h5" align="right">
+														{priceFormat(product.price - (product.price * (0.01 * product.discount)))}원
+													</Typography>
+												</Grid>
+											: null
+										}
+										<Typography variant="h6" align="right" mr={2} css={priceStyle({product})}>
 											{priceFormat(product.price)}원
 										</Typography>
 									</Grid>

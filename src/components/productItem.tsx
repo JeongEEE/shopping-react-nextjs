@@ -25,6 +25,11 @@ const focus = css`
 		box-shadow: 1px 1px 1px 1px gray;
 	}
 `
+const priceStyle = (props) => css`
+	text-decoration: ${props.product.discount > 0 ? 'line-through' : 'none'};
+	font-size: ${props.product.discount > 0 ? '0.75rem' : '1.2rem'};
+	color: ${props.product.discount > 0 ? 'grey' : 'black' };
+`
 
 const ProductItem = ({ product }) => {
 	return (
@@ -35,7 +40,17 @@ const ProductItem = ({ product }) => {
 						css={css`max-width:200px;`} />
 					<Typography variant="h5" css={detailCss}>{product.title}</Typography>
 					<Grid container direction="row" justifyContent="space-between" alignItems="center">
-						<Typography variant="h6" align="right">{priceFormat(product.price)}원</Typography>
+						<Grid container item direction="row" xs={'auto'} justifyContent="start" alignItems="top">
+							{product.discount > 0
+								? <Typography variant="h6" align="right"
+										css={css`color: #3d5afc;margin-right:2px;font-weight:bold;`}>
+										{priceFormat(product.price - (product.price * (0.01 * product.discount)))}원
+									</Typography>
+								: null
+							}
+							<Typography variant="h6" align="right" css={priceStyle({product})}>
+								{priceFormat(product.price)}원</Typography>
+						</Grid>
 						{product.wish ? <FavoriteIcon css={css`color:red;`} /> : <FavoriteBorderOutlinedIcon />}
 					</Grid>
 				</Grid>

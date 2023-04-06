@@ -47,6 +47,7 @@ const ProductManage = () => {
 			anchorOrigin: { vertical: 'top', horizontal: 'center' }})
 		fetchProductData();
 		getProductCount();
+		setPage(1);
 	}
 	const handlePage = (direction) => {
     if(direction === 'next') {
@@ -187,8 +188,9 @@ const ProductManage = () => {
 				css={css`background-color:#e9e9e9;`}>
 				<Grid container direction="row" justifyContent="start" alignItems="center">
 					<Grid item container xs={1} justifyContent="center">이미지</Grid>
-					<Grid item container xs={7} justifyContent="center">상품명</Grid>
+					<Grid item container xs={6} justifyContent="center">상품명</Grid>
 					<Grid item container xs={1} justifyContent="center">카테고리</Grid>
+					<Grid item container xs={1} justifyContent="center">할인(%)</Grid>
 					<Grid item container xs={1} justifyContent="center">가격(원)</Grid>
 					<Grid item container xs={2} pr={2} justifyContent="end">조작</Grid>
 				</Grid>
@@ -201,11 +203,14 @@ const ProductManage = () => {
 							<img src={product.image} alt={product.title} height={50}
 								css={css`max-width:50px;`} />
 						</Grid>
-						<Grid item container xs={7} alignItems="start">
+						<Grid item container xs={6} alignItems="start">
 							<Typography variant="h5" align="left">{product.title}</Typography>
 						</Grid>
 						<Grid item container xs={1} justifyContent="center">
 							<Typography variant="h6" align="left">{product.category}</Typography>
+						</Grid>
+						<Grid item container xs={1} justifyContent="center">
+							<Typography variant="h6" align="left">{product.discount}</Typography>
 						</Grid>
 						<Grid item container xs={1} justifyContent="center">
 							<Typography variant="h6" align="left">{priceFormat(product.price)}</Typography>

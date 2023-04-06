@@ -18,12 +18,15 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Grid from '@mui/material/Grid';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 
 const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, successFunc }) => {
 	const [open, setOpen] = useState(false);
 	const [title, setTitle] = useState('');
 	const [category, setCategory] = useState('');
 	const [price, setPrice] = useState(0);
+	const [discount, setDiscount] = useState(0);
 	const [description, setDescription] = useState('');
 	const [imageSrc, setImageSrc]: any = useState(null);
 	const [file, setFile] = useState(null);
@@ -39,6 +42,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 		setTitle('');
 		setCategory('');
 		setPrice(0);
+		setDiscount(0);
 		setDescription('');
 		setImageSrc(null);
 		setFileName('');
@@ -56,6 +60,11 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
   };
 	const priceChange = (e) => {
 		setPrice(e.target.value);
+	}
+	const discountChange = (e) => {
+		if(e.target.value < 0) setDiscount(0)
+		else if(e.target.value > 99) setDiscount(99)
+		else setDiscount(e.target.value);
 	}
 
 	const onUpload = (e: any) => {
@@ -101,7 +110,12 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 	}
 
 	const editProduct = async () => {
-		if(title == '' || category == '' || price == 0 || description == '' || fileName === '') return;
+		if(title == '' || category == '' || price == 0 || description == '' || fileName === '') {
+			enqueueSnackbar('공백이거나 사진이 없으면 안되요', 
+				{ variant: 'warning', autoHideDuration: 2000,
+					anchorOrigin: { vertical: 'top', horizontal: 'center' }});
+			return;
+		};
 		setLoading(true);
 		if(editType === 'add') {
 			let imageUrl = await fileImageUpload();
@@ -109,6 +123,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 				title: title,
 				category: category,
 				price: price,
+				discount: discount,
 				description: description,
 				image: imageUrl,
 				fileName: fileName,
@@ -130,6 +145,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 				title: title,
 				category: category,
 				price: price,
+				discount: discount,
 				description: description,
 				image: imageUrl,
 				fileName: fileName,
@@ -170,6 +186,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 				setTitle(originProduct.title);
 				setCategory(originProduct.category);
 				setPrice(originProduct.price);
+				setDiscount(originProduct.discount);
 				setDescription(originProduct.description);
 				setImageSrc(originProduct.image);
 				setFileName(originProduct.fileName);
@@ -189,8 +206,16 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
         <DialogContent css={css`max-height:30rem;`}>
           <TextField autoFocus margin="dense" type="text" onChange={titleChange}
             label="상품명" fullWidth variant="standard" value={title} />
-					<TextField margin="dense" type="number" onChange={priceChange}
-						label="가격(단위 원)" fullWidth variant="standard" value={price} />
+					<Grid container direction="row" justifyContent="center" alignItems="center">
+						<Grid item container xs={6} pr={2}>
+							<TextField margin="dense" type="number" onChange={priceChange}
+								label="가격(단위 원)" fullWidth variant="standard" value={price} />
+						</Grid>
+						<Grid item container xs={6}>
+							<TextField margin="dense" type="number" onChange={discountChange}
+								label="할인율(%)" fullWidth variant="standard" value={discount} />
+						</Grid>
+					</Grid>
 					<Box mt={2}>
 						<FormControl sx={{ minWidth: 200 }} size="small">
 							<InputLabel id="demo-select-small">카테고리</InputLabel>
@@ -218,6 +243,7 @@ const AddProductDialog = ({ visible, editType, originProduct, visibleFunc, succe
 					</LoadingButton>
         </DialogActions>
       </Dialog>
+			<SnackbarProvider preventDuplicate />
 		</div>
 	)
 }

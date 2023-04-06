@@ -67,8 +67,7 @@ const searchBtn = css`
 		background-color: #7e90f7;
 	}
 `
-
-const headerStyle = (props) => css`
+const headerStyle = css`
 	width: 800px;
 	height: 100%;
 `

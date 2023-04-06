@@ -33,6 +33,11 @@ const input = css`
 	font-size: 1rem;
 	padding: 5px;
 `
+const priceStyle = (props) => css`
+	text-decoration: ${props.product.discount > 0 ? 'line-through' : 'none'};
+	font-size: ${props.product.discount > 0 ? '1rem' : '1.4rem'};
+	color: ${props.product.discount > 0 ? 'grey' : 'black' };
+`
 
 const Basket = () => {
 	const router = useRouter();
@@ -197,7 +202,10 @@ const Basket = () => {
 		let total = 0;
 		let allChecked = 0;
 		localBasket.forEach((product) => {
-			if(product.checked) total += product.count * product.price;
+			if(product.checked) {
+				if(product.discount > 0) total += product.count * (product.price - (product.price * (0.01 * product.discount)));
+				else total += product.count * product.price;
+			}
 			else allChecked += 1;
 		})
 		setTotalPrice(Math.ceil(total * 100) / 100);
@@ -238,7 +246,19 @@ const Basket = () => {
 								<Grid item container xs={8} p={2}>
 									<Typography variant="h5" css={detailCss}>{product.title}</Typography>
 									<Grid container direction="row" justifyContent="start">
-										<Typography variant="h6" align="right" mr={2}>
+										{product.discount > 0
+											? <Grid item container xs={'auto'} direction="row" justifyContent="left">
+													<Typography variant="h5" align="right"
+														css={css`color: #3d5afc;margin-right:5px;font-weight:bold;`}>
+														J몰 할인가
+													</Typography>
+													<Typography variant="h5" align="right">
+														{priceFormat((product.price - (product.price * (0.01 * product.discount))) * product.count)}원
+													</Typography>
+												</Grid>
+											: null
+										}
+										<Typography variant="h6" align="right" mr={2} css={priceStyle({product})}>
 											{priceFormat(product.price * product.count)}원
 										</Typography>
 										<input type="number" css={input} min={1} max={10} 
