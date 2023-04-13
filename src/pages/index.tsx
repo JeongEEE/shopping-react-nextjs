@@ -19,6 +19,7 @@ import { Product } from 'src/types/product'
 import { getDocs, getDoc, query, collection, orderBy, doc, limit, limitToLast, 
 	startAfter, endBefore } from "firebase/firestore";
 import { whiteBtn } from 'src/styles/global';
+import HeadMeta from 'src/components/headMeta';
 
 const limitValue = 24;
 
@@ -145,6 +146,7 @@ export default function Home({ productData }) {
 	
   return (
 		<Box>
+			<HeadMeta title={'J 쇼핑몰'} />
 			<Grid container mb={5}>
 				<Grid>
 					<Carousel>

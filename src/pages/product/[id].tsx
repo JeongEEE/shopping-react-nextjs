@@ -15,6 +15,7 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Product } from 'src/types/product'
 import { priceFormat } from 'src/lib/utils';
+import HeadMeta from 'src/components/headMeta';
 
 const textdiv = css`
 	height: 2rem;
@@ -188,6 +189,9 @@ const ProductDetail = ({ id }) => {
 	
 	return (
 		<Box>
+			<HeadMeta title={product.title} description={product.description}
+				url={`https://shopping-react-ece42.firebaseapp.com/product/${id}`}
+				image={product.image} />
 			<Grid container>
 				<Grid container direction="row">
 					<Grid item container xs={6} p={2} justifyContent="center">
