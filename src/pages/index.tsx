@@ -172,7 +172,7 @@ export default function Home({ productData }) {
 			<HeadMeta title={'J 쇼핑몰'} />
 			<Grid container mb={5}>
 				<Grid>
-					<Carousel>
+					<Carousel indicators={false}>
 						<Image src="/images/sale2.png" alt="J Shopping" width={1100} height={300} priority />
 						<Image src="/images/sale1.png" alt="J Shopping" width={1100} height={300} priority />
 						<Image src="/images/sale3.png" alt="J Shopping" width={1100} height={300} priority />

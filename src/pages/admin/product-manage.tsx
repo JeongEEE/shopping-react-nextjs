@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -7,10 +7,10 @@ import Stack from '@mui/material/Stack';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { useRouter } from "next/router";
 import { db, storage } from 'src/firebaseConfig'
-import { getDocs, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, limitToLast, startAfter, endBefore, endAt } from "firebase/firestore";
+import { getDocs, addDoc, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, limitToLast, startAfter, endBefore, endAt } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import AddProductDialog from 'src/components/addProductDialog';
-import { whiteBtn } from 'src/styles/global';
+import { whiteBtn, ligntBlueBtn } from 'src/styles/global';
 import { confirmAlert } from 'react-confirm-alert';
 import { priceFormat } from 'src/lib/utils';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -23,11 +23,14 @@ const ProductManage = () => {
 	const [editType, setEditType] = useState('add');
 	const [originProduct, setOriginProduct] = useState(undefined);
 	const [products, setProducts] = useState([]);
+	const [todayHotProducts, setTodayHotProducts] = useState([]);
 	const [page, setPage] = useState(1);
 	const [pageCount, setPageCount] = useState(1);
 	const [productCount, setProductCount] = useState(0);
 	const [firstDoc, setFirstDoc] = useState(null);
 	const [lastDoc, setLastDoc] = useState(null);
+	const [running, setRunning] = useState(false);
+	let update = false;
 
 	const backPage = () => {
 		router.back();
@@ -65,19 +68,36 @@ const ProductManage = () => {
 		}
   }
 
+	const getTodayHotProductList = () => {
+		try {
+			getDocs(query(collection(db, 'todayHotProducts'), orderBy("timeMillisecond", "desc")))
+			.then((snapshot) => {
+				const data = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				console.log('오늘의 상품 - ', data);
+				setTodayHotProducts(data);
+			}).catch(err => { })
+		} catch(err) {
+			console.log(err);
+		}
+	}
+
 	const fetchProductData = () => {
 		try {
 			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), limit(limitValue)))
 			.then((snapshot) => {
 				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
-				const data = snapshot.docs.map(v => {
+				let data = snapshot.docs.map(v => {
 					const item = v.data()
-					return { id: v.id, ...item }
+					return { id: v.id, ...item, todayHot: false }
 				});
-				console.log(data);
+				console.log('Product -', data);
 				setProducts(data);
-			}).catch(err => { })
+				getTodayHotProductList();
+			}).catch(err => { });
 		} catch(err) {
 			console.log(err);
 		}
@@ -89,24 +109,26 @@ const ProductManage = () => {
 			.then((snapshot) => {
 				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
-				const data = snapshot.docs.map(v => {
+				let data = snapshot.docs.map(v => {
 					const item = v.data()
-					return { id: v.id, ...item }
+					return { id: v.id, ...item, todayHot: false }
 				});
-				console.log(data);
+				console.log('Product -', data);
 				setProducts(data);
+				getTodayHotProductList();
 			}).catch((err) => { });
 		} else {
 			getDocs(query(collection(db, 'products'), orderBy("timeMillisecond", "desc"), endBefore(firstDoc), limitToLast(limitValue)))
 			.then((snapshot) => {
 				setFirstDoc(snapshot.docs[0])
 				setLastDoc(snapshot.docs[snapshot.docs.length-1])
-				const data = snapshot.docs.map(v => {
+				let data = snapshot.docs.map(v => {
 					const item = v.data()
-					return { id: v.id, ...item }
+					return { id: v.id, ...item, todayHot: false }
 				});
-				console.log(data);
+				console.log('Product -', data);
 				setProducts(data);
+				getTodayHotProductList();
 			}).catch((err) => { });
 		}
 	}
@@ -141,6 +163,60 @@ const ProductManage = () => {
 		});
 	}
 
+	const checkAlreadyInTodayProducts = (product) => {
+		if(todayHotProducts.length == 0) return false;
+
+		const find = todayHotProducts.findIndex((el, index, arr) => el.title === product.title);
+		if(find == -1) return false;
+		else return true;
+	}
+
+	const editTodayHotProduct = (product, productIndex) => {
+		if(running) return;
+		if(product.todayHot) { // 오늘의 상품 등록되어있음 = 삭제
+			const idx = todayHotProducts.findIndex((el, index, arr) => el.title === product.title);
+			deleteDoc(doc(db, 'todayHotProducts', todayHotProducts[idx].id))
+			.then((snapshot) => {
+				let newArray = todayHotProducts;
+				newArray.splice(idx, 1);
+				setTodayHotProducts([...newArray]);
+				enqueueSnackbar('해제 성공', { variant: 'info', autoHideDuration: 2000,
+					anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			}).catch(err => { })
+		} else { // 오늘의상품 등록
+			if(checkAlreadyInTodayProducts(product)) {
+				enqueueSnackbar('이미 오늘의 상품에 등록되어 있습니다', { variant: 'info', autoHideDuration: 2000,
+					anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+				return;
+			}
+			const params = {
+				category: product.category,
+				image: product.image,
+				price: product.price,
+				discount: product.discount,
+				title: product.title,
+				description: product.description,
+				createdTime: product.createdTime,
+				timeMillisecond: product.timeMillisecond
+			}
+			setRunning(true);
+			addDoc(collection(db, 'todayHotProducts'), params).then((docRef) => {
+				let newArray = todayHotProducts;
+				newArray.push({ id: docRef.id, ...params });
+				setTodayHotProducts([...newArray]);
+				const find = products.findIndex((el, index, arr) => el.title === docRef.title);
+				if(find != -1) products[find].todayHot = true;
+				enqueueSnackbar('등록 완료', 
+					{ variant: 'success', autoHideDuration: 2000,
+						anchorOrigin: { vertical: 'top', horizontal: 'center' }});
+				setRunning(false);
+			}).catch((error) => {
+				console.log(error);
+				setRunning(false);
+			});
+		}
+	}
+
 	const getProductCount = () => {
 		getDoc(doc(db, 'docCount/products'))
 		.then((snapshot) => {
@@ -158,6 +234,15 @@ const ProductManage = () => {
 			setProductCount(productCount - 1);
 		}).catch((error) => { });	
 	}
+
+	useEffect(() => {
+		products.forEach((product, index) => {
+			const find = todayHotProducts.findIndex((el, index, arr) => el.title === product.title);
+			if(find != -1) products[index].todayHot = true;
+			else products[index].todayHot = false;
+		})
+		setProducts([...products])
+	}, [todayHotProducts]);
 
 	useEffect(() => {
 		fetchProductData();
@@ -221,6 +306,11 @@ const ProductManage = () => {
 								onClick={()=> openForm('modify', product)}>수정</Button>
 							<Button variant="contained" css={css`${whiteBtn};height:2rem;`} 
 								onClick={()=> askDelete(product)}>삭제</Button>
+							<Button variant="contained" 
+								css={css`${product.todayHot ? ligntBlueBtn : whiteBtn};height:2rem;margin-top:5px;`} 
+								onClick={()=> editTodayHotProduct(product, index)}>
+								{product.todayHot ? '오늘의 상품 해제' : '오늘의 상품 등록'}
+							</Button>
 						</Grid>
 					</Grid>
 				))}

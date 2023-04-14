@@ -19,3 +19,11 @@ export const blueBtn = css`
 		color: white;
 	}
 `
+export const ligntBlueBtn = css`
+	background-color: #bec1fa;
+	color: black;
+	&:hover {
+		background-color: #bec1fa;
+		color: white;
+	}
+`
