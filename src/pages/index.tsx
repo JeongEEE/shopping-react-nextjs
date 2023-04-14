@@ -20,6 +20,7 @@ import { getDocs, getDoc, query, collection, orderBy, doc, limit, limitToLast,
 	startAfter, endBefore } from "firebase/firestore";
 import { whiteBtn } from 'src/styles/global';
 import HeadMeta from 'src/components/headMeta';
+import HomePopModal from 'src/components/homePopModal';
 
 const limitValue = 24;
 
@@ -51,6 +52,8 @@ export default function Home({ productData }) {
 	const [productCount, setProductCount] = useState(0);
 	const [firstDoc, setFirstDoc] = useState(null);
 	const [lastDoc, setLastDoc] = useState(null);
+	const [showPop, setShowPop] = useState(false);
+	let HOME_VISITED = undefined;
 
 	const handlePage = (direction) => {
     if(direction === 'next') {
@@ -128,6 +131,26 @@ export default function Home({ productData }) {
 	}
 
 	useEffect(() => {
+		const today = new Date();
+		HOME_VISITED = localStorage.getItem("homeVisited");
+    const handleMainPop = () => {
+      if (HOME_VISITED && HOME_VISITED > today) {
+      // 현재 date가 localStorage의 시간보다 크면 return
+        return;
+      }
+      if (!HOME_VISITED || HOME_VISITED < today) {
+      // 저장된 date가 없거나 today보다 작다면 popup 노출
+				setShowPop(true);
+      }
+    };
+    window.setTimeout(handleMainPop, 500); // 0.5초 뒤 실행
+		return () => {
+			
+		}
+	}, [HOME_VISITED])
+	
+
+	useEffect(() => {
 		console.log('컴포넌트가 화면에 나타남');
 		initFetch();
 		getProductCount();
@@ -170,6 +193,7 @@ export default function Home({ productData }) {
 					</Grid>
 				</Grid>
 			</Grid>
+			{showPop && <HomePopModal setShowPop={setShowPop} />}
 			<TopButton />
 		</Box>
   )
