@@ -18,9 +18,6 @@ const Admin = () => {
 			case 'product':
 				router.push('/admin/product-manage');
 				break;
-			case 'todayHot':
-				router.push('/admin/todayhotproduct-manage');
-				break;
 			case 'mui':
 				router.push('/admin/white-test/mui-test');
 				break;
@@ -55,8 +52,6 @@ const Admin = () => {
 			<Grid container direction="row" alignItems="center" p={1} mb={3}>
 				<Button variant="contained"
 					onClick={() => pushRouter('product')}>상품 관리</Button>
-				<Button variant="contained" css={css`margin-left:10px;`}
-					onClick={() => pushRouter('todayHot')}>오늘의 상품 관리</Button>
 				<Button variant="contained" css={css`margin-left:10px;`}
 					onClick={() => pushRouter('category')}>카테고리 관리</Button>
 				<Button variant="contained" css={css`margin-left:10px;${whiteBtn};`}
