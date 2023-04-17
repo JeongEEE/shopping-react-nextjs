@@ -13,7 +13,7 @@ const HeadMeta = ({ title, description, url, image }) => {
       <meta property="og:type" content="website" />
       <meta property="og:url" content={url || "https://shopping-react-ece42.firebaseapp.com"} />
       <meta property="og:image" content={image || "https://i.ibb.co/7g94dTY/shopping-bg.png"} />
-    </Head>
+		</Head>
   );
 }
 

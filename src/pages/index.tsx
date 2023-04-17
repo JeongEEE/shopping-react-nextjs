@@ -6,10 +6,12 @@ import { useRouter } from "next/router";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import { css } from '@emotion/react'
 import Typography from '@mui/material/Typography';
 import networkController from 'src/api/networkController'
 import ProductItem from 'src/components/productItem';
+import TodayHotItem from 'src/components/todayHotItem';
 import TopButton from 'src/components/topButton';
 import { db } from 'src/firebaseConfig'
 import { useRecoilState } from 'recoil';
@@ -23,6 +25,17 @@ import HeadMeta from 'src/components/headMeta';
 import HomePopModal from 'src/components/homePopModal';
 
 const limitValue = 24;
+
+const titleCss = css`
+	width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-word;
+   
+  display: -webkit-box;
+  -webkit-line-clamp: 2; // 원하는 라인수
+  -webkit-box-orient: vertical;
+`
 
 export async function getStaticProps() {
   try {
@@ -45,6 +58,8 @@ export async function getStaticProps() {
 export default function Home({ productData }) {
 	const router = useRouter();
 	const [products, setProducts] = useState<Array<Product>>([]);
+	const [todayHotProducts, setTodayHotProducts] = useState([]);
+	const [todayHotItemSlider, setTodayHotItemSlider] = useState([]);
 	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
 	const [userData, setUserData] = useRecoilState(userDataState);
 	const [page, setPage] = useState(1);
@@ -77,6 +92,32 @@ export default function Home({ productData }) {
 			setFirstDoc(snapshot.docs[0])
 			setLastDoc(snapshot.docs[snapshot.docs.length-1])
 		}).catch((err) => { });
+
+		getDocs(query(collection(db, 'todayHotProducts'), orderBy("timeMillisecond", "desc")))
+		.then((snapshot) => {
+			const data = snapshot.docs.map(v => {
+				const item = v.data()
+				return { id: v.id, ...item }
+			});
+			console.log('오늘의 상품 - ', data);
+			setTodayHotProducts(data);
+
+			let array = [];
+			const sliderItems: number = data.length > 4 ? 4 : data.length;
+			for (let i = 0; i < data.length; i += sliderItems) {
+				if (i === 0 || i % sliderItems === 0) {
+					array.push(
+						<Grid container p={1} direction="row" spacing={0} key={i.toString()}>
+							{data.slice(i, i + sliderItems).map((product, index) => {
+								return <TodayHotItem product={product} key={index.toString()} />;
+							})}
+						</Grid>
+					);
+				}
+			}
+			setTodayHotItemSlider(array);
+
+		}).catch(err => { })
 	}
 
 	const directionFetch = (direction) => {
@@ -178,6 +219,10 @@ export default function Home({ productData }) {
 						<Image src="/images/sale3.png" alt="J Shopping" width={1100} height={300} priority />
 						<Image src="/images/sale4.png" alt="J Shopping" width={1100} height={300} priority />
 						<Image src="/images/sale5.png" alt="J Shopping" width={1100} height={300} priority />
+					</Carousel>
+					<Typography variant="h6" align="left">J 쇼핑몰이 엄선한 오늘의 HOT한 상품!</Typography>
+					<Carousel autoPlay interval={10000} animation="slide" cycleNavigation navButtonsAlwaysVisible>
+						{todayHotItemSlider}
 					</Carousel>
 					<Grid mt={2} container direction="row" justifyContent="space-between" alignItems="center">
 						{products.map(product => (
