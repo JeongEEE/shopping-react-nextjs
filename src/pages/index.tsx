@@ -222,7 +222,13 @@ export default function Home({ productData }) {
 					</Carousel>
 					{todayHotItemSlider.length > 0
 						? <div>
-								<Typography variant="h6" align="left">J 쇼핑몰이 엄선한 오늘의 HOT한 상품!</Typography>
+								<Grid container direction="row" justifyContent="start" alignItems="center">
+									<Typography variant="h5" align="left">오늘의 상품</Typography>
+									<Typography variant="h7" align="left"
+										css={css`margin-left:10px;border-left:3px solid black;padding-left:10px;`}>
+											J 쇼핑몰이 엄선한 오늘의 HOT한 상품!
+									</Typography>
+								</Grid>
 								<div css={css`width:100%;height:340px;`}>
 									<Carousel autoPlay interval={10000} animation="slide" cycleNavigation 
 										navButtonsAlwaysVisible css={css`width:100%;height:340px;`}>
