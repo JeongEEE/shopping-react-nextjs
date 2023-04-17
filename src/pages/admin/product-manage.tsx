@@ -190,6 +190,7 @@ const ProductManage = () => {
 				return;
 			}
 			const params = {
+				originalId: product.id,
 				category: product.category,
 				image: product.image,
 				price: product.price,

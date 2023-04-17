@@ -28,7 +28,7 @@ const focus = css`
 const TodayHotItem = ({ product }) => {
 	return (
 		<Grid item xs={3} p={2} css={focus} justifyContent="center">
-			<Link href={`/product/${product.id}`}>
+			<Link href={`/product/${product.originalId}`}>
 				<Grid container justifyContent="center">
 					<img src={product.image} alt={product.title} height={200}
 						css={css`max-width:200px;`} />
