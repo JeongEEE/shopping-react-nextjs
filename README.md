@@ -12,6 +12,7 @@ https://shopping-react-ece42.firebaseapp.com
 - 카테고리 검색(Pagination)
 - 장바구니
 - 찜 리스트
+- 오늘의 Hot한 상품 목록
 - 마이페이지
 - 결제페이지(실제 결제x)
 - 주문목록

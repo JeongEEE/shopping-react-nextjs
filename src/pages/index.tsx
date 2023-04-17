@@ -220,10 +220,18 @@ export default function Home({ productData }) {
 						<Image src="/images/sale4.png" alt="J Shopping" width={1100} height={300} priority />
 						<Image src="/images/sale5.png" alt="J Shopping" width={1100} height={300} priority />
 					</Carousel>
-					<Typography variant="h6" align="left">J 쇼핑몰이 엄선한 오늘의 HOT한 상품!</Typography>
-					<Carousel autoPlay interval={10000} animation="slide" cycleNavigation navButtonsAlwaysVisible>
-						{todayHotItemSlider}
-					</Carousel>
+					{todayHotItemSlider.length > 0
+						? <div>
+								<Typography variant="h6" align="left">J 쇼핑몰이 엄선한 오늘의 HOT한 상품!</Typography>
+								<div css={css`width:100%;height:340px;`}>
+									<Carousel autoPlay interval={10000} animation="slide" cycleNavigation 
+										navButtonsAlwaysVisible css={css`width:100%;height:340px;`}>
+										{todayHotItemSlider}
+									</Carousel>
+								</div>
+							</div>
+						: null
+					}
 					<Grid mt={2} container direction="row" justifyContent="space-between" alignItems="center">
 						{products.map(product => (
 							<ProductItem product={product} key={product.id} />
