@@ -47,6 +47,7 @@ export async function getStaticProps() {
 		return {
       props: {
         productData: data,
+				mainTitle: 'J 쇼핑몰'
       },
 			revalidate: 600, // seconds
     };
@@ -55,7 +56,7 @@ export async function getStaticProps() {
 	}
 }
 
-export default function Home({ productData }) {
+export default function Home({ productData, mainTitle }) {
 	const router = useRouter();
 	const [products, setProducts] = useState<Array<Product>>([]);
 	const [todayHotProducts, setTodayHotProducts] = useState([]);
@@ -210,7 +211,7 @@ export default function Home({ productData }) {
 	
   return (
 		<Box>
-			<HeadMeta title={'J 쇼핑몰'} />
+			<HeadMeta title={mainTitle} />
 			<Grid container mb={5}>
 				<Grid>
 					<Carousel indicators={false}>
