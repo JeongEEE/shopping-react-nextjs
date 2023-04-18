@@ -56,6 +56,33 @@ const CouponManage = () => {
 		}
 	}
 
+	const deleteCoupon = async (coupon) => {
+		await deleteDoc(doc(db, 'coupons', coupon.id))
+			.then((snapshot) => {
+				enqueueSnackbar('삭제 성공', { variant: 'success', autoHideDuration: 2000,
+					anchorOrigin: { vertical: 'top', horizontal: 'center' }});
+				fetchCoupons();
+			})
+			.catch((error) => { });
+	}
+
+	const askDelete = (coupon) => {
+		confirmAlert({ title: '삭제', message: '선택하신 쿠폰을 삭제 하시겠습니까?',
+			buttons: [
+				{
+					label: '예',
+					onClick: () => {
+						deleteCoupon(coupon);
+					}
+				},
+				{
+					label: '아니오',
+					onClick: () => { }
+				}
+			]
+		});
+	}
+
 	useEffect(() => {
 		fetchCoupons();
 	
@@ -85,7 +112,7 @@ const CouponManage = () => {
 				css={css`background-color:#e9e9e9;`}>
 				<Grid container direction="row" justifyContent="start" alignItems="center">
 					<Grid item container xs={3} justifyContent="start">쿠폰명</Grid>
-					<Grid item container xs={1} justifyContent="center">할인금액(%)</Grid>
+					<Grid item container xs={1} justifyContent="center">할인금액(원)</Grid>
 					<Grid item container xs={1} justifyContent="center">유효기간(일)</Grid>
 					<Grid item container xs={5} justifyContent="center">설명</Grid>
 					<Grid item container xs={2} pr={2} justifyContent="end">조작</Grid>
@@ -112,7 +139,7 @@ const CouponManage = () => {
 								css={css`${whiteBtn};height:2rem;margin-right:5px;`}
 								>할당</Button>
 							<Button variant="contained" css={css`${whiteBtn};height:2rem;`} 
-								>삭제</Button>
+								onClick={()=> askDelete(coupon)}>삭제</Button>
 						</Grid>
 					</Grid>
 				))}
