@@ -107,7 +107,7 @@ const ProductDetail = ({ id }) => {
 			createdTime: formatDateKor(new Date()),
 			timeMillisecond: Date.now()
 		}
-		await addDoc(collection(db, userData.email, 'userData/wishList'), params)
+		await addDoc(collection(db, 'userData/wishList', userData.email), params)
 		.then((docRef) => {
 			enqueueSnackbar('찜목록에 등록 완료', { variant: 'success', autoHideDuration: 2000,
 				anchorOrigin: { vertical: 'top', horizontal: 'center' }});
@@ -150,7 +150,7 @@ const ProductDetail = ({ id }) => {
 			createdTime: formatDateKor(new Date()),
 			timeMillisecond: Date.now()
 		}
-		await addDoc(collection(db, userData.email, 'userData/basket'), params)
+		await addDoc(collection(db, 'userData/basket', userData.email), params)
 		.then((docRef) => {
 			enqueueSnackbar('장바구니에 등록 완료', { variant: 'success', autoHideDuration: 2000,
 				anchorOrigin: { vertical: 'top', horizontal: 'center' }})

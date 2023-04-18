@@ -51,8 +51,8 @@ const Basket = () => {
 
 	const fetchBasketData = () => {
 		try {
-			getDocs(query(collection(db, userData.email, 
-				'userData/basket'), orderBy("timeMillisecond", "desc")))
+			getDocs(query(collection(db,
+				'userData/basket', userData.email), orderBy("timeMillisecond", "desc")))
 			.then((snapshot) => {
 				const basket = snapshot.docs.map(v => {
 					const item = v.data()
@@ -68,7 +68,7 @@ const Basket = () => {
 	}
 
 	const updateBasketData = (count, docId) => {
-		updateDoc(doc(db, userData.email, 'userData/basket', docId), {
+		updateDoc(doc(db, 'userData/basket', userData.email, docId), {
 			"count": count
 		});
 	}
@@ -151,7 +151,7 @@ const Basket = () => {
 		let basketCopy = JSON.parse(JSON.stringify(basket));
 		basket.forEach((product, index) => {
 			if(product.checked) {
-				deleteDoc(doc(db, userData.email, 'userData/basket', product.id))
+				deleteDoc(doc(db, 'userData/basket', userData.email, product.id))
 				.then((snapshot) => { }).catch(err => { })
 			}
 		})
@@ -163,7 +163,7 @@ const Basket = () => {
 	}
 
 	const deleteProduct = (docId, index) => {
-		deleteDoc(doc(db, userData.email, 'userData/basket', docId))
+		deleteDoc(doc(db, 'userData/basket', userData.email, docId))
 		.then((snapshot) => {
 			const basketCopy = JSON.parse(JSON.stringify(basket));
 			basketCopy.splice(index, 1);

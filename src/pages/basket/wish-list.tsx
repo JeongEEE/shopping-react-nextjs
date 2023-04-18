@@ -52,8 +52,8 @@ const WishListPage = () => {
 
 	const fetchWishData = () => {
 		try {
-			getDocs(query(collection(db, userData.email, 
-				'userData/wishList'), orderBy("timeMillisecond", "desc")))
+			getDocs(query(collection(db, 
+				'userData/wishList', userData.email), orderBy("timeMillisecond", "desc")))
 			.then((snapshot) => {
 				const wishList = snapshot.docs.map(v => {
 					const item = v.data()
@@ -125,7 +125,7 @@ const WishListPage = () => {
 		let wishCopy = JSON.parse(JSON.stringify(wishData));
 		wishData.forEach((product, index) => {
 			if(product.checked) {
-				deleteDoc(doc(db, userData.email, 'userData/wishList', product.id))
+				deleteDoc(doc(db, 'userData/wishList', userData.email, product.id))
 				.then((snapshot) => { }).catch(err => { })
 			}
 		})
@@ -137,7 +137,7 @@ const WishListPage = () => {
 	}
 
 	const deleteProduct = (docId, index) => {
-		deleteDoc(doc(db, userData.email, 'userData/wishList', docId))
+		deleteDoc(doc(db, 'userData/wishList', userData.email, docId))
 		.then((snapshot) => {
 			const wishCopy = JSON.parse(JSON.stringify(wishData));
 			wishCopy.splice(index, 1);
@@ -174,7 +174,7 @@ const WishListPage = () => {
 			createdTime: formatDateKor(new Date()),
 			timeMillisecond: Date.now()
 		}
-		await addDoc(collection(db, userData.email, 'userData/basket'), params)
+		await addDoc(collection(db, 'userData/basket', userData.email), params)
 		.then((docRef) => {
 			enqueueSnackbar('장바구니에 등록 완료', { variant: 'success', autoHideDuration: 2000,
 				anchorOrigin: { vertical: 'top', horizontal: 'center' }})

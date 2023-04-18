@@ -142,14 +142,14 @@ function MainNavigation() {
 
 	const fetchWishData = () => {
 		try {
-			getDocs(query(collection(db, userData.email, 
-				'userData/wishList'), orderBy("timeMillisecond", "desc")))
+			getDocs(query(collection(db, 
+				'userData/wishList', userData.email), orderBy("timeMillisecond", "desc")))
 			.then((snapshot) => {
 				const wishList = snapshot.docs.map(v => {
 					const item = v.data()
 					return { id: v.id, ...item }
 				});
-				setWishData(wishList)
+				setWishData([...wishList])
 				console.log('wishList', wishList);
 			}).catch(err => { })
 		} catch(err) {
@@ -159,14 +159,14 @@ function MainNavigation() {
 
 	const fetchBasketData = () => {
 		try {
-			getDocs(query(collection(db, userData.email, 
-				'userData/basket'), orderBy("timeMillisecond", "desc")))
+			getDocs(query(collection(db,
+				'userData/basket', userData.email), orderBy("timeMillisecond", "desc")))
 			.then((snapshot) => {
 				const basket = snapshot.docs.map(v => {
 					const item = v.data()
 					return { id: v.id, ...item }
 				});
-				setBasketData(basket)
+				setBasketData([...basket])
 				setBasketCount(basket.length)
 				console.log('basket', basket);
 				
@@ -198,6 +198,7 @@ function MainNavigation() {
 			setAccess(false)
 			setUserData({});
 			setBasketData([]);
+			setWishData([]);
 			if(router.asPath == '/') location.reload();
 			else router.replace('/');
 		}).catch((error) => {
