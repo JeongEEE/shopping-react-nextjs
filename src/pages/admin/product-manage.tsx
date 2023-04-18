@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { db, storage } from 'src/firebaseConfig'
 import { getDocs, addDoc, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, limitToLast, startAfter, endBefore, endAt } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
-import AddProductDialog from 'src/components/addProductDialog';
+import AddProductDialog from 'src/components/dialog/addProductDialog';
 import { whiteBtn, ligntBlueBtn } from 'src/styles/global';
 import { confirmAlert } from 'react-confirm-alert';
 import { priceFormat } from 'src/lib/utils';

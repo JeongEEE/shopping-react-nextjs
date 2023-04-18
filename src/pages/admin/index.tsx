@@ -6,12 +6,17 @@ import { css } from '@emotion/react'
 import Stack from '@mui/material/Stack';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { useRouter } from "next/router";
-import AddProductDialog from 'src/components/addProductDialog';
 import { whiteBtn } from 'src/styles/global';
+import dayjs, { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'dayjs/locale/ko';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { koKR } from '@mui/x-date-pickers/locales';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const Admin = () => {
 	const router = useRouter();
-	const [dialogOpen, setDialogOpen] = useState(false);
+	const [startDate, setStartDate] = useState<Dayjs | null>(dayjs(new Date()));
 
 	const pushRouter = (page) => {
 		switch(page) {
@@ -27,14 +32,10 @@ const Admin = () => {
 			case 'category':
 				router.push('/admin/category-manage');
 				break;
+			case 'coupon':
+				router.push('/admin/coupon-manage');
+				break;
 		}
-	}
-
-	const openForm = () => {
-		setDialogOpen(true);
-	}
-	const visibleFunc = (visible) => {
-		setDialogOpen(visible);
 	}
 
 	const openSnackbar = () => {
@@ -54,8 +55,12 @@ const Admin = () => {
 					onClick={() => pushRouter('product')}>상품 관리</Button>
 				<Button variant="contained" css={css`margin-left:10px;`}
 					onClick={() => pushRouter('category')}>카테고리 관리</Button>
+				<Button variant="contained" css={css`margin-left:10px;`}
+					onClick={() => pushRouter('coupon')}>쿠폰 관리</Button>
 				<Button variant="contained" css={css`margin-left:10px;${whiteBtn};`}
-					>쿠폰 관리</Button>
+					>주문 내역</Button>
+				<Button variant="contained" css={css`margin-left:10px;${whiteBtn};`}
+					>회원 관리</Button>
 			</Grid>
 
 			<Typography pl={1} mt={1} variant="h4">White Test</Typography>
@@ -65,13 +70,19 @@ const Admin = () => {
 					<Button variant="contained" onClick={() => pushRouter('mui')}>MUI TEST</Button>
 					<Button variant="contained" onClick={() => pushRouter('recoil')}>Recoil TEST</Button>
 				</Stack>
-				<Stack mt={1} direction="row" spacing={1}>
+				<Stack mt={2} direction="row" spacing={1}>
 					<Button variant="contained" onClick={openSnackbar}>Snackbar TEST</Button>
-					<Button variant="contained" onClick={openForm}>Dialog TEST</Button>
+					<Grid item container xs={6} pr={2}>
+						<LocalizationProvider localeText={koKR.components.MuiLocalizationProvider.defaultProps.localeText}
+							dateAdapter={AdapterDayjs} adapterLocale="ko">
+							<DatePicker label="날짜 Test" slotProps={{ textField: { size: 'small' } }}
+								formatDensity="spacious"
+								value={startDate} onChange={(newValue) => setStartDate(newValue)} />
+						</LocalizationProvider>
+					</Grid>
 				</Stack>
 				<SnackbarProvider preventDuplicate />
 			</Grid>
-			<AddProductDialog visible={dialogOpen} visibleFunc={visibleFunc} />
 		</Grid>
 	)
 }

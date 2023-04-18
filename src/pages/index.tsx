@@ -222,7 +222,7 @@ export default function Home({ productData, mainTitle }) {
 						<Image src="/images/sale5.png" alt="J Shopping" width={1100} height={300} priority />
 					</Carousel>
 					{todayHotItemSlider.length > 0
-						? <div>
+						? <Grid container mt={1}>
 								<Grid container direction="row" justifyContent="start" alignItems="center">
 									<Typography variant="h5" align="left">오늘의 상품</Typography>
 									<Typography variant="h7" align="left"
@@ -230,13 +230,13 @@ export default function Home({ productData, mainTitle }) {
 											J 쇼핑몰이 엄선한 오늘의 HOT한 상품!
 									</Typography>
 								</Grid>
-								<div css={css`width:100%;height:340px;`}>
+								<Grid container css={css`width:100%;height:340px;`}>
 									<Carousel autoPlay interval={10000} animation="slide" cycleNavigation 
 										navButtonsAlwaysVisible css={css`width:100%;height:340px;`}>
 										{todayHotItemSlider}
 									</Carousel>
-								</div>
-							</div>
+								</Grid>
+							</Grid>
 						: null
 					}
 					<Grid mt={2} container direction="row" justifyContent="space-between" alignItems="center">

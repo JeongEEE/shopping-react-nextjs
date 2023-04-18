@@ -192,7 +192,7 @@ const ProductDetail = ({ id }) => {
 			<HeadMeta title={product.title} description={product.description}
 				url={`https://shopping-react-ece42.firebaseapp.com/product/${id}`}
 				image={product.image} />
-			<Grid container>
+			<Grid container mt={3}>
 				<Grid container direction="row">
 					<Grid item container xs={6} p={2} justifyContent="center">
 						<img src={product.image} alt={product.title} height={400}
