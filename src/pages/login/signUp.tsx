@@ -12,6 +12,9 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from 'src/firebaseConfig'
 import { SnackbarProvider, enqueueSnackbar } from 'notistack'
 import { validateEmail } from 'src/lib/utils'
+import { formatDateKor } from 'src/lib/utils';
+import { db } from 'src/firebaseConfig'
+import { collection, addDoc } from "firebase/firestore";
 
 const loginWrap = css`
 	max-width: 500px;
@@ -43,6 +46,25 @@ const SignUp = () => {
 		setPw(e.target.value);
 	}
 
+	const addUserToList = (user) => {
+		addDoc(collection(db, 'userData/userList/auth'), {
+			accessToken: user.accessToken,
+			displayName: user.displayName,
+			email: user.email,
+			phoneNumber: user.phoneNumber,
+			photoURL: user.photoURL,
+			providerId: user.providerId,
+			uid: user.uid,
+			role: 1, // 0 관리자, 1 일반사용자
+			createdTime: formatDateKor(new Date()),
+			timeMillisecond: Date.now()
+		}).then((docRef) => {
+			
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+
 	const requestSignUp = async () => {
 		if(!validateEmail(id)) {
 			enqueueSnackbar('이메일 형식이 아닙니다', 
@@ -58,9 +80,10 @@ const SignUp = () => {
 		}
 		setLoading(true);
 		createUserWithEmailAndPassword(auth, id, pw)
-		.then((userCredential) => {
+		.then(async (userCredential) => {
 			const user = userCredential.user;
 			console.log(user);
+			await addUserToList(user);
 			setLoading(false);
 			router.push("/login")
 		})

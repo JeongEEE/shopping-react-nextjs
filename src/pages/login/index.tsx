@@ -53,8 +53,17 @@ const Login = () => {
 		setLoading(true);
 		signInWithEmailAndPassword(auth, id, pw)
 		.then((userCredential) => {
-			console.log('UserData - ', userCredential.user);
-			setUserData(userCredential.user);
+			const user = userCredential.user;
+			console.log('UserData - ', user);
+			setUserData({
+				email: user.email,
+				accessToken: user.accessToken,
+				displayName: user.displayName,
+				phoneNumber: user.phoneNumber,
+				photoURL: user.photoURL,
+				providerId: user.providerId,
+				uid: user.uid
+			});
 			setLoading(false);
 			router.push("/")
 		})

@@ -14,7 +14,7 @@ const popWrap = css`
 	/* box-shadow: 1px 1px 1px 1px gray; */
 	border: 1px solid black;
 	background-color: white;
-	width: 250px;
+	width: 270px;
 `
 
 const HomePopModal = ({ setShowPop }) => {

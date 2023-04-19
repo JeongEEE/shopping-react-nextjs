@@ -35,6 +35,9 @@ const Admin = () => {
 			case 'coupon':
 				router.push('/admin/coupon-manage');
 				break;
+			case 'userList':
+				router.push('/admin/user-manage');
+				break;
 		}
 	}
 
@@ -57,10 +60,10 @@ const Admin = () => {
 					onClick={() => pushRouter('category')}>카테고리 관리</Button>
 				<Button variant="contained" css={css`margin-left:10px;`}
 					onClick={() => pushRouter('coupon')}>쿠폰 관리</Button>
+				<Button variant="contained" css={css`margin-left:10px;`}
+					onClick={() => pushRouter('userList')}>회원 관리</Button>
 				<Button variant="contained" css={css`margin-left:10px;${whiteBtn};`}
 					>주문 내역</Button>
-				<Button variant="contained" css={css`margin-left:10px;${whiteBtn};`}
-					>회원 관리</Button>
 			</Grid>
 
 			<Typography pl={1} mt={1} variant="h4">White Test</Typography>
