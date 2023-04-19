@@ -7,18 +7,18 @@ import { backCleanBtn } from 'src/styles/global';
 import MyInfoHeader from 'src/components/myInfoHeader'
 import MyInfoLeftNav from 'src/components/myInfoLeftNav'
 
-const MyInfo = () => {
+const OrderList = () => {
 	return (
 		<Grid container direction="column" pt={1}>
 			<MyInfoHeader />
 			<Grid container direction="row" alignItems="start">
 				<MyInfoLeftNav />
 				<Grid item xs={10} p={3} container direction="column" alignItems="start">
-					<Typography variant="h5">내 정보</Typography>
+					<Typography variant="h5">주문 목록</Typography>
 				</Grid>
 			</Grid>
 		</Grid>
 	)
 }
 
-export default MyInfo
+export default OrderList

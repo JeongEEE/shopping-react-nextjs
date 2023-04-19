@@ -15,6 +15,7 @@ import { validateEmail } from 'src/lib/utils'
 import { formatDateKor } from 'src/lib/utils';
 import { db } from 'src/firebaseConfig'
 import { collection, addDoc } from "firebase/firestore";
+import dayjs, { Dayjs } from 'dayjs';
 
 const loginWrap = css`
 	max-width: 500px;
@@ -56,6 +57,19 @@ const SignUp = () => {
 			providerId: user.providerId,
 			uid: user.uid,
 			role: 1, // 0 관리자, 1 일반사용자
+			createdTime: formatDateKor(new Date()),
+			timeMillisecond: Date.now()
+		}).then((docRef) => {
+			
+		}).catch((error) => {
+			console.log(error);
+		});
+		addDoc(collection(db, 'userData/coupons', user.email), {
+			startTime: dayjs(new Date()).format(),
+			description: "신규가입 회원에게 5000원 할인 쿠폰 지급",
+			discountPrice: '5000',
+			expireDate: '21',
+			title: "신규가입 환영 쿠폰",
 			createdTime: formatDateKor(new Date()),
 			timeMillisecond: Date.now()
 		}).then((docRef) => {

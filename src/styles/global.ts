@@ -27,3 +27,11 @@ export const ligntBlueBtn = css`
 		color: white;
 	}
 `
+export const backCleanBtn = css`
+	background-color: transparent;
+	color: black;
+	&:hover {
+		background-color: transparent;
+		color: blue;
+	}
+`

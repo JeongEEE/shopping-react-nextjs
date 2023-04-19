@@ -119,6 +119,15 @@ function MainNavigation() {
 		}
 		router.push('/my-info');
   };
+	const goOrderList = () => {
+    setAnchorEl(null);
+		if(!userData.email) {
+			enqueueSnackbar('로그인 후 이용해주세요', { variant: 'info', autoHideDuration: 2000,
+				anchorOrigin: { vertical: 'top', horizontal: 'center' }})
+			return;
+		}
+		router.push('/my-info/orderList');
+  };
 	const goAdmin = () => {
 		setAnchorEl(null);
 		router.push('/admin');
@@ -315,9 +324,9 @@ function MainNavigation() {
 						<Menu anchorEl={anchorEl} open={open} onClose={handleClose}
 							MenuListProps={{'aria-labelledby': 'basic-button'}} 
 							disableScrollLock={true} onMouseLeave={handleClose}>
-							<MenuItem>주문목록</MenuItem>
-							<MenuItem onClick={goWishList}>찜 목록</MenuItem>
 							<MenuItem onClick={goMyInfo}>내정보</MenuItem>
+							<MenuItem onClick={goOrderList}>주문목록</MenuItem>
+							<MenuItem onClick={goWishList}>찜 목록</MenuItem>
 							{userData.email == 'test@test.com' && mounted
 								? <MenuItem onClick={goAdmin}>관리자메뉴</MenuItem> : null }
 						</Menu>
