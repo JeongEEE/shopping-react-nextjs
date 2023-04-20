@@ -16,13 +16,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import AddCouponDialog from 'src/components/dialog/addCouponDialog'
+import GiveCouponDialog from 'src/components/dialog/giveCouponDialog'
 import { priceFormat } from 'src/lib/utils';
 
 const CouponManage = () => {
 	const router = useRouter();
 	const [dialogOpen, setDialogOpen] = useState(false);
+	const [dialogOpen2, setDialogOpen2] = useState(false);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [coupons, setCoupons] = useState([]);
+	const [userList, setUserList] = useState([]);
+	const [selectedCoupon, setSelectedCoupon] = useState(null);
 
 	const backPage = () => {
 		router.back();
@@ -39,6 +43,18 @@ const CouponManage = () => {
 			anchorOrigin: { vertical: 'top', horizontal: 'center' }});
 		fetchCoupons();
 	}
+	const openForm2 = (coupon) => {
+		setSelectedCoupon(coupon);
+		setDialogOpen2(true);
+	}
+	const visibleFunc2 = (visible) => {
+		setDialogOpen2(visible);
+	}
+	const successFunc2 = (successValue) => {
+		enqueueSnackbar('할당 성공', 
+			{ variant: 'success', autoHideDuration: 2000,
+			anchorOrigin: { vertical: 'top', horizontal: 'center' }});
+	}
 
 	const fetchCoupons = async () => {
 		try {
@@ -49,7 +65,23 @@ const CouponManage = () => {
 					return { id: v.id, ...item }
 				});
 				console.log('쿠폰 - ', data);
-				setCoupons(data);
+				setCoupons([...data]);
+			}).catch(err => { })
+		} catch(err) {
+			console.log(err);
+		}
+	}
+
+	const fetchUserList = async () => {
+		try {
+			getDocs(query(collection(db, 'userData/userList/auth'), orderBy("timeMillisecond", "desc")))
+			.then((snapshot) => {
+				const data = snapshot.docs.map(v => {
+					const item = v.data()
+					return { id: v.id, ...item }
+				});
+				console.log('유저목록 - ', data);
+				setUserList([...data]);
 			}).catch(err => { })
 		} catch(err) {
 			console.log(err);
@@ -85,7 +117,7 @@ const CouponManage = () => {
 
 	useEffect(() => {
 		fetchCoupons();
-	
+		fetchUserList();
 		return () => {
 			
 		}
@@ -137,7 +169,7 @@ const CouponManage = () => {
 						<Grid item container xs={2} justifyContent="end">
 							<Button variant="contained" 
 								css={css`${whiteBtn};height:2rem;margin-right:5px;`}
-								>할당</Button>
+								onClick={()=> openForm2(coupon)}>할당</Button>
 							<Button variant="contained" css={css`${whiteBtn};height:2rem;`} 
 								onClick={()=> askDelete(coupon)}>삭제</Button>
 						</Grid>
@@ -146,6 +178,8 @@ const CouponManage = () => {
 			</Grid>
 
 			<AddCouponDialog visible={dialogOpen} visibleFunc={visibleFunc} successFunc={successFunc} />
+			<GiveCouponDialog visible={dialogOpen2} visibleFunc={visibleFunc2} successFunc={successFunc2}
+				userList={userList} selectedCoupon={selectedCoupon} />
 			<SnackbarProvider preventDuplicate />
 		</Grid>
 	)

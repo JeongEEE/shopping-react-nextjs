@@ -27,6 +27,7 @@ const MyInfoHeader = () => {
 				});
 				console.log('쿠폰 -', data);
 				setLocalCouponData([...data]);
+				setCouponCount(data.length);
 			}).catch(err => { });
 		} catch(err) {
 			console.log(err);

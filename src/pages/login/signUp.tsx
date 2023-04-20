@@ -49,7 +49,6 @@ const SignUp = () => {
 
 	const addUserToList = (user) => {
 		addDoc(collection(db, 'userData/userList/auth'), {
-			accessToken: user.accessToken,
 			displayName: user.displayName,
 			email: user.email,
 			phoneNumber: user.phoneNumber,

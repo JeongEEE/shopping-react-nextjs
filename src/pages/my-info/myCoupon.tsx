@@ -32,21 +32,20 @@ const MyCoupon = () => {
 		};
 	}
 
-	const checkSoonExpired = (startTime, expireDate) => {
+	const checkSoon24Expired = (startTime, expireDate) => {
 		// 쿠폰 만료 24시간 이내 true
 		let start = dayjs(startTime);
-		let end = start.add(expireDate, "day");
-		const current = dayjs(new Date());
-		const diff = end.diff(current, "hour");
-		if(diff > -24 && diff < 0) return true;
-		else return false;
-	}
-	const checkExpired = (startTime, expireDate) => {
-		// 사용가능한데 만료된 경우 true
-		let start = dayjs(startTime);
-		let end = start.add(expireDate, "day");
+		let end = start.add(Number(expireDate), "day");
 		const current = dayjs(new Date());
 		const diff = end.diff(current, "hour", true);
+		if(diff < 24 && diff > 0) return true;
+		else return false;
+	}
+	const checkExpired = (startTime) => {
+		// 사용가능한데 만료된 경우 true
+		let start = dayjs(startTime);
+		const current = dayjs(new Date());
+		const diff = start.diff(current, "hour", true);
 		if(diff > 0) return true;
 		else return false;
 	}
@@ -57,10 +56,10 @@ const MyCoupon = () => {
 		let soon24Expired = [];
 		localCouponData.forEach((coupon) => {
 			if(coupon.status == 'Available') {
-				if(checkExpired(coupon.startTime, coupon.expireDate)) expired.push(coupon);
+				if(checkExpired(coupon.startTime)) expired.push(coupon);
 				else {
 					available.push(coupon);
-					if(checkSoonExpired(coupon.startTime, coupon.expireDate)) soon24Expired.push(coupon);
+					if(checkSoon24Expired(coupon.startTime, coupon.expireDate)) soon24Expired.push(coupon);
 				}
 			}
 			else expired.push(coupon);
@@ -74,11 +73,11 @@ const MyCoupon = () => {
 		setCoupons([...localCouponData]);
 		checkCouponAvaliable();
 
-		let curr = dayjs('2023-04-20T10:00:00+09:00')
-		let end = dayjs('2023-04-20T10:10:00+09:00')
-		let diff = end.diff(curr, 'hour', true)
-		console.log(diff)
-		console.log(diff > 0)
+		// let curr = dayjs('2023-04-20T10:00:00+09:00')
+		// let end = dayjs('2023-04-19T10:10:00+09:00')
+		// let diff = end.diff(curr, 'hour', true)
+		// console.log(diff)
+		// console.log(diff > -24 && diff < 0)
 	}, [])
 	
 
@@ -154,23 +153,23 @@ const MyCoupon = () => {
 									</Grid>
 								</Grid>
 								<Grid container direction="column" alignItems="start" p={1}>
-									{expiredCoupons.map((coupon, index) => (
+									{expiredCoupons.map((expired, index) => (
 										<Grid container direction="row" justifyContent="start" alignItems="center" 
-											p={1} key={coupon.id} css={css`border-bottom:1px solid #d2d2d2;`}>
+											p={1} key={expired.id} css={css`border-bottom:1px solid #d2d2d2;`}>
 											<Grid item container xs={3} justifyContent="center">
-												<Typography variant="h7" align="center">{coupon.title}</Typography>
+												<Typography variant="h7" align="center">{expired.title}</Typography>
 											</Grid>
 											<Grid item container xs={4} justifyContent="center">
-												<Typography variant="h7" align="left">{coupon.description}</Typography>
+												<Typography variant="h7" align="left">{expired.description}</Typography>
 											</Grid>
 											<Grid item container xs={1} justifyContent="center">
-												<Typography variant="h7" align="left">{priceFormat(coupon.discountPrice)}</Typography>
+												<Typography variant="h7" align="left">{priceFormat(expired.discountPrice)}</Typography>
 											</Grid>
 											<Grid item container xs={1} justifyContent="center">
-												<Typography variant="h7" align="left">{coupon.expireDate}</Typography>
+												<Typography variant="h7" align="left">{expired.expireDate}</Typography>
 											</Grid>
 											<Grid item container xs={3} justifyContent="center">
-												<Typography variant="h7" align="left">{coupon.createdTime}</Typography>
+												<Typography variant="h7" align="left">{expired.createdTime}</Typography>
 											</Grid>
 										</Grid>
 									))}

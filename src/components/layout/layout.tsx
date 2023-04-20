@@ -27,6 +27,7 @@ const Layout = (props: any) => {
 	const [localWideValue, setLocalWideValue] = useRecoilState(wideState);
 
 	useEffect(() => {
+		console.log("%cJ 쇼핑몰", "font-size:27px;color:#0045d0;");
 		// firebase 로그인 상태 변경을 감지
 		auth.onAuthStateChanged((user) => {
       if (user) {

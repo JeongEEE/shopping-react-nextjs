@@ -200,7 +200,6 @@ export default function Home({ productData, mainTitle }) {
 	
 
 	useEffect(() => {
-		// console.log("%cJ 쇼핑몰", "font-size:27px;color:#0045d0;");
 		console.log('컴포넌트가 화면에 나타남');
 		initFetch();
 		getProductCount();

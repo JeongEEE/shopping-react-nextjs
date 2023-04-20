@@ -8,32 +8,29 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 
-function not(a: readonly number[], b: readonly number[]) {
+function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
-
-function intersection(a: readonly number[], b: readonly number[]) {
+function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferList() {
-  const [checked, setChecked] = useState<readonly number[]>([]);
-  const [left, setLeft] = useState<readonly number[]>([0, 1, 2, 3]);
-  const [right, setRight] = useState<readonly number[]>([4, 5, 6, 7]);
+export default function TransferList({ userList, transferResultFunc }) {
+  const [checked, setChecked] = useState([]);
+  const [left, setLeft] = useState([]);
+  const [right, setRight] = useState([]);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
 
-  const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value);
+  const handleToggle = (user) => () => {
+    const currentIndex = checked.indexOf(user);
     const newChecked = [...checked];
-
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newChecked.push(user);
     } else {
       newChecked.splice(currentIndex, 1);
     }
-
     setChecked(newChecked);
   };
 
@@ -41,45 +38,50 @@ export default function TransferList() {
     setRight(right.concat(left));
     setLeft([]);
   };
-
   const handleCheckedRight = () => {
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
-
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
-
   const handleAllLeft = () => {
     setLeft(left.concat(right));
     setRight([]);
   };
 
-  const customList = (items: readonly number[]) => (
+  const customList = (items) => (
     <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
       <List dense component="div" role="list">
-        {items.map((value: number) => {
-          const labelId = `transfer-list-item-${value}-label`;
+        {items.map((user, index) => {
+          const labelId = `transfer-list-item-${index}-label`;
           return (
-            <ListItem key={value} role="listitem" button
-              onClick={handleToggle(value)}>
+            <ListItem key={index} role="listitem" button
+              onClick={handleToggle(user)}>
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value) !== -1} tabIndex={-1} disableRipple
+                  checked={checked.indexOf(user) !== -1} tabIndex={-1} disableRipple
                   inputProps={{ 'aria-labelledby': labelId, }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemText id={labelId} primary={`${user.email}`} />
             </ListItem>
           );
         })}
       </List>
     </Paper>
   );
+
+	useEffect(() => {
+		setLeft([...userList]);
+	}, [])
+
+	useEffect(() => {
+		transferResultFunc([...right]);
+	}, [right])
 
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">
