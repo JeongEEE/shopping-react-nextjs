@@ -108,27 +108,27 @@ const MyCoupon = () => {
 						</Box>
 						{tabValue == 0
 						? <Grid container direction="column" alignItems="start">
-								<Grid container direction="column" alignItems="start" p={2} pt={1} pb={1}
+								<Grid container direction="column" alignItems="start" pt={1} pb={1}
 									css={css`background-color:#e9e9e9;`}>
 									<Grid container direction="row" justifyContent="start" alignItems="center">
-										<Grid item container xs={3} justifyContent="center">쿠폰명</Grid>
+										<Grid item container xs={2} justifyContent="center">쿠폰명</Grid>
 										<Grid item container xs={4} justifyContent="center">설명</Grid>
-										<Grid item container xs={1} justifyContent="center">할인금액(원)</Grid>
+										<Grid item container xs={2} justifyContent="center">할인금액(원)</Grid>
 										<Grid item container xs={1} justifyContent="center">유효기간</Grid>
 										<Grid item container xs={3} justifyContent="center">생성날짜</Grid>
 									</Grid>
 								</Grid>
-								<Grid container direction="column" alignItems="start" p={1}>
+								<Grid container direction="column" alignItems="start">
 									{coupons.map((coupon, index) => (
 										<Grid container direction="row" justifyContent="start" alignItems="center" 
 											p={1} key={coupon.id} css={css`border-bottom:1px solid #d2d2d2;`}>
-											<Grid item container xs={3} justifyContent="center">
+											<Grid item container xs={2} justifyContent="center">
 												<Typography variant="h7" align="center">{coupon.title}</Typography>
 											</Grid>
 											<Grid item container xs={4} justifyContent="center">
 												<Typography variant="h7" align="left">{coupon.description}</Typography>
 											</Grid>
-											<Grid item container xs={1} justifyContent="center">
+											<Grid item container xs={2} justifyContent="center">
 												<Typography variant="h7" align="left">{priceFormat(coupon.discountPrice)}</Typography>
 											</Grid>
 											<Grid item container xs={1} justifyContent="center">
@@ -142,27 +142,27 @@ const MyCoupon = () => {
 								</Grid>
 							</Grid>
 						: <Grid container direction="column" alignItems="start">
-								<Grid container direction="column" alignItems="start" p={2} pt={1} pb={1}
+								<Grid container direction="column" alignItems="start" pt={1} pb={1}
 									css={css`background-color:#e9e9e9;`}>
 									<Grid container direction="row" justifyContent="start" alignItems="center">
-										<Grid item container xs={3} justifyContent="center">쿠폰명</Grid>
+										<Grid item container xs={2} justifyContent="center">쿠폰명</Grid>
 										<Grid item container xs={4} justifyContent="center">설명</Grid>
-										<Grid item container xs={1} justifyContent="center">할인금액(원)</Grid>
+										<Grid item container xs={2} justifyContent="center">할인금액(원)</Grid>
 										<Grid item container xs={1} justifyContent="center">유효기간</Grid>
 										<Grid item container xs={3} justifyContent="center">생성날짜</Grid>
 									</Grid>
 								</Grid>
-								<Grid container direction="column" alignItems="start" p={1}>
+								<Grid container direction="column" alignItems="start">
 									{expiredCoupons.map((expired, index) => (
 										<Grid container direction="row" justifyContent="start" alignItems="center" 
 											p={1} key={expired.id} css={css`border-bottom:1px solid #d2d2d2;`}>
-											<Grid item container xs={3} justifyContent="center">
+											<Grid item container xs={2} justifyContent="center">
 												<Typography variant="h7" align="center">{expired.title}</Typography>
 											</Grid>
 											<Grid item container xs={4} justifyContent="center">
 												<Typography variant="h7" align="left">{expired.description}</Typography>
 											</Grid>
-											<Grid item container xs={1} justifyContent="center">
+											<Grid item container xs={2} justifyContent="center">
 												<Typography variant="h7" align="left">{priceFormat(expired.discountPrice)}</Typography>
 											</Grid>
 											<Grid item container xs={1} justifyContent="center">
