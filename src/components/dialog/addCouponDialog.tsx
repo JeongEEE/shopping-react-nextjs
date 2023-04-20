@@ -65,6 +65,7 @@ const AddCouponDialog = ({ visible, visibleFunc, successFunc }) => {
 			discountPrice: discountPrice,
 			description: description,
 			expireDate: expireDate,
+			status: 'Available',
 			createdTime: formatDateKor(new Date()),
 			timeMillisecond: Date.now()
 		}).then((docRef) => {

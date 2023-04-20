@@ -50,6 +50,12 @@ export const wideState = atom({
 	effects_UNSTABLE: [persistAtom],
 });
 
+export const couponState = atom({
+  key: 'couponState',
+	default: [],
+	effects_UNSTABLE: [persistAtom],
+});
+
 // ########################################## sample
 export const sample = atom({
   key: 'sample',

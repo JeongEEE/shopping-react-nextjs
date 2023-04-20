@@ -70,6 +70,7 @@ const SignUp = () => {
 			discountPrice: '5000',
 			expireDate: '21',
 			title: "신규가입 환영 쿠폰",
+			status: 'Available',
 			createdTime: formatDateKor(new Date()),
 			timeMillisecond: Date.now()
 		}).then((docRef) => {
