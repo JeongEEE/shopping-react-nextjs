@@ -7,6 +7,7 @@ import { db } from 'src/firebaseConfig'
 import { getDocs, setDoc, getDoc, query, collection, orderBy, doc, deleteDoc, updateDoc, limit, limitToLast, startAfter, endBefore, endAt } from "firebase/firestore";
 import { useRouter } from "next/router";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { whiteBtn } from 'src/styles/global';
 
 const UserManage = () => {
 	const router = useRouter();
@@ -95,11 +96,11 @@ const UserManage = () => {
 							<Typography variant="h7" align="left">{user.createdTime}</Typography>
 						</Grid>
 						<Grid item container xs={2} justifyContent="end">
-							{/* <Button variant="contained" 
-								css={css`${whiteBtn};height:2rem;margin-right:5px;`}
-								onClick={()=> openForm('modify', product)}>수정</Button>
-							<Button variant="contained" css={css`${whiteBtn};height:2rem;`} 
-								onClick={()=> askDelete(product)}>삭제</Button> */}
+							<Button variant="contained" 
+								css={css`${whiteBtn};height:1.75rem;margin-right:5px;`}
+								>권한 수정</Button>
+							<Button variant="contained" css={css`${whiteBtn};height:1.75rem;`} 
+								>삭제</Button>
 						</Grid>
 					</Grid>
 				))}
