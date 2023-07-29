@@ -1,7 +1,14 @@
 import React from 'react'
 import Head from "next/head";
 
-const HeadMeta = ({ title, description, url, image }) => {
+interface PropsType {
+      title: string;
+      description?: string;
+      url?: string;
+      image?: string;
+}
+
+const HeadMeta = ({ title, description, url, image }: PropsType) => {
 	return (
     <Head>
       <title>{title || "J 쇼핑몰"}</title>

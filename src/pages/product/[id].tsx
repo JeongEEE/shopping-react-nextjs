@@ -16,6 +16,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Product } from 'src/types/product'
 import { priceFormat } from 'src/lib/utils';
 import HeadMeta from 'src/components/headMeta';
+import { useQuery } from "react-query";
 
 const textdiv = css`
 	height: 2rem;
@@ -60,6 +61,20 @@ const ProductDetail = ({ id }) => {
 	const [wishData, setWishData] = useRecoilState<Array<Product>>(wishState);
 	const [basketData, setBasketData] = useRecoilState<Array<Product>>(basketState);
 	const [purchaseList, setPurchaseList] = useRecoilState<Array<Product>>(purchaseState);
+
+	const fetchProductDetail = () => {
+		return getDoc(doc(db, 'products', id));
+	}
+
+	const { data, status } = useQuery("changeUser", fetchProductDetail, {
+		onSuccess: (snapshot) => {
+			let data = snapshot.data() as Product;
+			setProduct(data);
+		},
+		onError: e => {
+			console.log(e.message);
+		}
+	});
 
 	const inputOnChange = (e) => {
 		const value = Number(e.target.value);
@@ -175,17 +190,6 @@ const ProductDetail = ({ id }) => {
 		setPurchaseList([product]);
 		router.push('/purchase');
 	}
-
-	const fetchProductDetail = () => {
-		getDoc(doc(db, 'products', id)).then((snapshot) => {
-			let data = snapshot.data();
-			setProduct(data);
-		}).catch((error) => { });
-	}
-
-	useEffect(() => {
-		fetchProductDetail();
-	}, [])
 	
 	return (
 		<Box>

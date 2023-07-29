@@ -4,9 +4,9 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { css, jsx } from '@emotion/react'
+import { css } from '@emotion/react'
+import { useMutation } from "react-query";
 import { useRouter } from "next/router";
-import networkController from 'src/api/networkController'
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useRecoilState } from 'recoil';
 import { userDataState } from 'src/states/atoms'
@@ -49,6 +49,42 @@ const Login = () => {
 		setPw(e.target.value);
 	}
 
+	const requestLogin = () => {
+		setLoading(true);
+		return signInWithEmailAndPassword(auth, id, pw);
+	}
+
+	const loginMutation = useMutation(requestLogin,{
+		onMutate: variable => {
+			console.log("onMutate", variable);
+		},
+		onError: (error, variable, context) => {
+			console.log(error);
+			setLoading(false);
+		},
+		onSuccess: (data, variables, context) => {
+			console.log("success", data, variables, context);
+			const user = data.user;
+			setUserData({
+				email: user.email,
+				// accessToken: user.accessToken,
+				displayName: user.displayName,
+				phoneNumber: user.phoneNumber,
+				photoURL: user.photoURL,
+				providerId: user.providerId,
+				uid: user.uid
+			} as User);
+			setLoading(false);
+			router.push("/")
+		},
+		onSettled: () => {
+			console.log("end");
+		}
+	});
+	const clickLogin = () => {
+		loginMutation.mutate();
+	}
+
 	const requestSignIn = async () => {
 		setLoading(true);
 		signInWithEmailAndPassword(auth, id, pw)
@@ -57,7 +93,7 @@ const Login = () => {
 			console.log('UserData - ', user);
 			setUserData({
 				email: user.email,
-				accessToken: user.accessToken,
+				// accessToken: user.accessToken,
 				displayName: user.displayName,
 				phoneNumber: user.phoneNumber,
 				photoURL: user.photoURL,
@@ -87,7 +123,7 @@ const Login = () => {
 					required type="password" value={pw} onChange={pwInputOnChange} />
 			</Grid>
 			<Grid pt={2} container justifyContent="center">
-				<LoadingButton variant="contained" css={btn} onClick={requestSignIn}
+				<LoadingButton variant="contained" css={btn} onClick={clickLogin}
 					loading={loading}>로그인</LoadingButton>
 			</Grid>
 			<Grid pt={1} pb={2} container justifyContent="center">

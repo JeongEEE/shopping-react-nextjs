@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link'
-import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from "next/router";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
 import { css } from '@emotion/react'
+import { useQuery } from "react-query";
 import Typography from '@mui/material/Typography';
-import networkController from 'src/api/networkController'
 import ProductItem from 'src/components/productItem';
 import TodayHotItem from 'src/components/todayHotItem';
 import TopButton from 'src/components/topButton';
